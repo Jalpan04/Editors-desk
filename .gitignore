@@ -1,0 +1,11 @@
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pygame-cache/
+.gemini/
+.idea/
+.vscode/
+build/
+dist/
+*.egg-info/
