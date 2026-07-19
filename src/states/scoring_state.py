@@ -35,6 +35,7 @@ class ScoringState(State):
         # Scoring data passing
         self.result = {}
         self.guess = ""
+        self.score_ticker = 0
         
         # Animation states: "init", "letters", "final_calc", "done"
         self.anim_stage = "init"
@@ -55,6 +56,7 @@ class ScoringState(State):
     def enter(self, **kwargs):
         self.result = kwargs.get("result", {})
         self.guess = kwargs.get("guess", "").lower()
+        self.score_ticker = self.run_manager.round_score - self.result.get("score", 0)
         
         self.buttons.clear()
         
@@ -180,6 +182,14 @@ class ScoringState(State):
         for btn in self.buttons:
             btn.update(dt)
             
+        # Count up score ticker if stage is done
+        if self.anim_stage == "done":
+            target_score = self.run_manager.round_score
+            if self.score_ticker < target_score:
+                diff = target_score - self.score_ticker
+                speed = max(1, int(diff * 8.0 * dt))
+                self.score_ticker = min(target_score, self.score_ticker + speed)
+                
         # Animation sequence
         self.timer += dt
         
@@ -232,10 +242,10 @@ class ScoringState(State):
                             
                         if clue == 'green':
                             added_chips += let_chips + 50
-                            added_x = 3.0
+                            added_x = 1.5
                         elif clue == 'yellow':
                             added_chips += let_chips + 20
-                            added_mult += 2.0
+                            added_mult += 1.0
                         else:
                             added_chips += let_chips
                             
@@ -335,9 +345,7 @@ class ScoringState(State):
         
         # Show round score increasing dynamically
         # Tally score is added to round score when done
-        display_score = self.run_manager.round_score
-        if self.anim_stage == "done":
-            display_score += self.result["score"]
+        display_score = int(self.score_ticker)
             
         score_str = f"{display_score:,}"
         score_surf = self.score_font.render(score_str, True, config.COLOR_TEXT_LIGHT)

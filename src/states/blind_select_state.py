@@ -135,7 +135,7 @@ class BlindSelectState(State):
 
     def get_blind_target_score(self, idx):
         """Helper to compute targets for select screen display."""
-        chapter_bases = [0, 500, 1500, 4000, 10000, 25000, 60000, 120000, 250000]
+        chapter_bases = [0, 1000, 3000, 8000, 20000, 50000, 120000, 300000, 800000]
         base = chapter_bases[min(self.run_manager.chapter, 8)]
         
         target = 0

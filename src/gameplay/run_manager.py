@@ -69,18 +69,8 @@ class RunManager:
             return f"Boss Blind: {self.selected_boss}"
 
     def update_target_score(self):
-        """Sets the target score based on the current chapter and blind."""
-        # Baseline score targets for each chapter
-        # Chapter 1: 500 / 800 / 1200
-        # Chapter 2: 1500 / 2400 / 3600
-        # Chapter 3: 4000 / 6400 / 9600
-        # Chapter 4: 10000 / 16000 / 24000
-        # Chapter 5: 25000 / 40000 / 60000
-        # Chapter 6: 60000 / 90000 / 135000
-        # Chapter 7: 120000 / 180000 / 270000
-        # Chapter 8: 250000 / 400000 / 600000
         
-        chapter_bases = [0, 500, 1500, 4000, 10000, 25000, 60000, 120000, 250000]
+        chapter_bases = [0, 1000, 3000, 8000, 20000, 50000, 120000, 300000, 800000]
         base = chapter_bases[min(self.chapter, 8)]
         
         if self.blind_index == 0:

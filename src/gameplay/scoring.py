@@ -147,10 +147,10 @@ def calculate_word_score(guess, target, style_guides_levels, keyboard_mods, boss
             # Score based on clue color
             if clue == 'green':
                 score_mgr.add_chips(let_chips + 50)
-                score_mgr.add_x_mult(3.0)
+                score_mgr.add_x_mult(1.5)
             elif clue == 'yellow':
                 score_mgr.add_chips(let_chips + 20)
-                score_mgr.add_mult(2.0)
+                score_mgr.add_mult(1.0)
             else:  # grey
                 score_mgr.add_chips(let_chips)
                 

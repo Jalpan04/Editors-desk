@@ -59,10 +59,10 @@ class PurpleProseTrope(Trope):
             # Re-trigger scoring for this letter
             if clue == 'green':
                 score_manager.add_chips(let_chips + 50)
-                score_manager.add_x_mult(3.0)
+                score_manager.add_x_mult(1.5)
             elif clue == 'yellow':
                 score_manager.add_chips(let_chips + 20)
-                score_manager.add_mult(2.0)
+                score_manager.add_mult(1.0)
             else:
                 score_manager.add_chips(let_chips)
 
