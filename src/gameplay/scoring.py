@@ -63,7 +63,7 @@ def identify_pattern(clues, guess, target):
 class ScoreManager:
     def __init__(self):
         self.chips = 0
-        self.mult = 1.0
+        self.mult = 0.0
         self.x_mults = []  # List of multiplicative multipliers (e.g. x1.5, x3.0)
 
     def add_chips(self, amount):
