@@ -241,13 +241,11 @@ class ScoringState(State):
                             added_chips += 50
                             
                         if clue == 'green':
-                            added_chips += let_chips + 50
-                            added_x = 1.5
+                            added_chips += 5
                         elif clue == 'yellow':
-                            added_chips += let_chips + 20
-                            added_mult += 1.0
+                            added_chips += 1
                         else:
-                            added_chips += let_chips
+                            added_chips += 0
                             
                         self.displayed_chips += added_chips
                         self.displayed_mult += added_mult

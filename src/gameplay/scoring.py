@@ -135,24 +135,23 @@ def calculate_word_score(guess, target, style_guides_levels, keyboard_mods, boss
         repeat_count = 2 if is_stapled else 1
         
         for _ in range(repeat_count):
-            # Base chips of the letter itself
-            let_chips = LETTER_CHIPS.get(letter, 1)
-            
+            # Letter base points: equal for all characters, decided only by clue color:
+            # green=5, yellow=1, grey=0
+            if clue == 'green':
+                let_chips = 5
+            elif clue == 'yellow':
+                let_chips = 1
+            else:
+                let_chips = 0
+                
             # Add mods bonuses
             if is_highlighted:
                 score_mgr.add_mult(15.0)
             if is_coffee_ring:
                 score_mgr.add_chips(50)
                 
-            # Score based on clue color
-            if clue == 'green':
-                score_mgr.add_chips(let_chips + 50)
-                score_mgr.add_x_mult(1.5)
-            elif clue == 'yellow':
-                score_mgr.add_chips(let_chips + 20)
-                score_mgr.add_mult(1.0)
-            else:  # grey
-                score_mgr.add_chips(0)
+            # Add letter chips
+            score_mgr.add_chips(let_chips)
                 
         # Fire event for letter-level custom adjustments (e.g. from Tropes)
         event_bus.bus.publish('ON_LETTER_SCORED', letter, i, clue, score_mgr)

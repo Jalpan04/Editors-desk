@@ -55,16 +55,11 @@ class PurpleProseTrope(Trope):
 
     def apply_double_rare(self, letter, index, clue, score_manager):
         if letter in ['z', 'x', 'q', 'j']:
-            let_chips = LETTER_CHIPS.get(letter, 1)
-            # Re-trigger scoring for this letter
+            # Re-trigger scoring for this letter (Green=5, Yellow=1, Grey=0)
             if clue == 'green':
-                score_manager.add_chips(let_chips + 50)
-                score_manager.add_x_mult(1.5)
+                score_manager.add_chips(5)
             elif clue == 'yellow':
-                score_manager.add_chips(let_chips + 20)
-                score_manager.add_mult(1.0)
-            else:
-                score_manager.add_chips(0)
+                score_manager.add_chips(1)
 
 
 class RedPenTrope(Trope):
