@@ -6,33 +6,33 @@ STYLE_GUIDES_DATA = {
         "display_name": "The Masterpiece",
         "description": "5 Green letters. Guess the exact word.",
         "base_chips": 250,
-        "base_mult": 8.0,
-        "upgrade_chips": 80,
-        "upgrade_mult": 6.0,
+        "base_mult": 10.0,
+        "upgrade_chips": 50,
+        "upgrade_mult": 2.0,
         "price": 3
     },
     "Jumble": {
         "display_name": "The Jumble",
         "description": "5 Yellow letters. An exact anagram of the target word.",
         "base_chips": 100,
-        "base_mult": 4.0,
-        "upgrade_chips": 40,
-        "upgrade_mult": 4.0,
+        "base_mult": 6.0,
+        "upgrade_chips": 30,
+        "upgrade_mult": 1.5,
         "price": 3
     },
     "Shot in the Dark": {
         "display_name": "The Shot in the Dark",
         "description": "1 Green, 4 Grey letters. Pinpointing just one letter.",
-        "base_chips": 20,
-        "base_mult": 2.0,
-        "upgrade_chips": 15,
-        "upgrade_mult": 2.0,
+        "base_chips": 60,
+        "base_mult": 4.0,
+        "upgrade_chips": 20,
+        "upgrade_mult": 1.0,
         "price": 2
     },
     "Total Rewrite": {
         "display_name": "The Total Rewrite",
         "description": "5 Grey letters. Guess a word with zero correct letters.",
-        "base_chips": 5,
+        "base_chips": 10,
         "base_mult": 1.0,
         "upgrade_chips": 5,
         "upgrade_mult": 1.0,
@@ -41,10 +41,10 @@ STYLE_GUIDES_DATA = {
     "Standard Submission": {
         "display_name": "Standard Submission",
         "description": "Any other letter combination.",
-        "base_chips": 10,
-        "base_mult": 1.0,
+        "base_chips": 30,
+        "base_mult": 3.0,
         "upgrade_chips": 10,
-        "upgrade_mult": 1.0,
+        "upgrade_mult": 0.5,
         "price": 2
     }
 }
