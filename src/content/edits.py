@@ -78,7 +78,7 @@ class ShredderEdit(Edit):
         run_manager.drafts_left = run_manager.drafts_max
         
         # Pick new word
-        if run_manager.boss_blind == "Minimalist":
+        if run_manager.boss_assignment == "Minimalist":
             run_manager.target_word = run_manager.get_4_letter_target()
         else:
             run_manager.target_word = run_manager.dictionary.get_random_target()

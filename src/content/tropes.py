@@ -1,5 +1,5 @@
 from src.engine import event_bus
-from src.gameplay.scoring import LETTER_CHIPS
+from src.gameplay.scoring import LETTER_WORDS
 
 class Trope:
     def __init__(self, name, description, debuff_desc, price=5):
@@ -22,7 +22,7 @@ class PlotTwistTrope(Trope):
     def __init__(self):
         super().__init__(
             name="The Plot Twist",
-            description="Guessing exactly 1 Green and 4 Greys gives an x15 Multiplier.",
+            description="Guessing exactly 1 Green and 4 Greys gives an x15 Hypeiplier.",
             debuff_desc="You can no longer play words containing the letter 'E'.",
             price=6
         )
@@ -35,7 +35,7 @@ class PlotTwistTrope(Trope):
 
     def apply_bonus(self, score_manager, guess, clues, pattern_name):
         if pattern_name == "Shot in the Dark":
-            score_manager.add_x_mult(15.0)
+            score_manager.add_x_hype(15.0)
 
 
 class PurpleProseTrope(Trope):
@@ -57,16 +57,16 @@ class PurpleProseTrope(Trope):
         if letter in ['z', 'x', 'q', 'j']:
             # Re-trigger scoring for this letter (Green=5, Yellow=1, Grey=0)
             if clue == 'green':
-                score_manager.add_chips(5)
+                score_manager.add_words(5)
             elif clue == 'yellow':
-                score_manager.add_chips(1)
+                score_manager.add_words(1)
 
 
 class RedPenTrope(Trope):
     def __init__(self):
         super().__init__(
             name="The Red Pen",
-            description="Grey letters trigger permanent Green letter bonus of +10 chips.",
+            description="Grey letters trigger permanent Green letter bonus of +10 words.",
             debuff_desc="You lose 1 Submission per round; grey letters are removed from keyboard.",
             price=7
         )
@@ -104,7 +104,7 @@ class InkRibbonTrope(Trope):
     def __init__(self):
         super().__init__(
             name="Ink Ribbon",
-            description="Each Green letter in your word adds +2 Multiplier.",
+            description="Each Green letter in your word adds +2 Hypeiplier.",
             debuff_desc="None.",
             price=4
         )
@@ -119,14 +119,14 @@ class InkRibbonTrope(Trope):
     def apply_bonus(self, score_manager, guess, clues, pattern_name):
         green_count = clues.count('green')
         if green_count > 0:
-            score_manager.add_mult(green_count * 2.0)
+            score_manager.add_hype(green_count * 2.0)
 
 
 class DeadlineTrope(Trope):
     def __init__(self):
         super().__init__(
             name="The Deadline",
-            description="If this is your final Submission, gain +100 Chips and +10 Multiplier.",
+            description="If this is your final Submission, gain +100 Words and +10 Hypeiplier.",
             debuff_desc="None.",
             price=4
         )
@@ -142,15 +142,15 @@ class DeadlineTrope(Trope):
 
     def apply_bonus(self, score_manager, guess, clues, pattern_name):
         if self.rm and self.rm.submissions_left <= 0:  # Since submissions_left is decremented before scoring
-            score_manager.add_chips(100)
-            score_manager.add_mult(10.0)
+            score_manager.add_words(100)
+            score_manager.add_hype(10.0)
 
 
 class FirstEditionTrope(Trope):
     def __init__(self):
         super().__init__(
             name="First Edition",
-            description="The first Submission of every round scores x2.0 Multiplier.",
+            description="The first Submission of every round scores x2.0 Hypeiplier.",
             debuff_desc="None.",
             price=5
         )
@@ -166,7 +166,7 @@ class FirstEditionTrope(Trope):
 
     def apply_bonus(self, score_manager, guess, clues, pattern_name):
         if self.rm and len(self.rm.round_history) == 1:  # Only includes current guess in history
-            score_manager.add_x_mult(2.0)
+            score_manager.add_x_hype(2.0)
 
 
 def create_all_tropes():

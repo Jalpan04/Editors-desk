@@ -43,7 +43,7 @@ class ShopState(State):
         # Roll Shop Inventory
         self.roll_shop()
         
-        # Add Next Blind button at top right
+        # Add Next Assignment button at top right
         self.buttons.append(Button(
             x=config.SCREEN_WIDTH - 220,
             y=15,
@@ -55,8 +55,8 @@ class ShopState(State):
         ))
 
     def next_assignment(self):
-        # Proceed back to blind select screen
-        self.state_machine.change_state("blind_select")
+        # Proceed back to assignment select screen
+        self.state_machine.change_state("assignment_select")
 
     def roll_shop(self):
         self.shop_items.clear()
@@ -100,8 +100,8 @@ class ShopState(State):
         
         # 4. Card 4: Keyboard sticker mod
         stickers = [
-            {"name": "Yellow Highlighter", "desc": "Played key gives permanent +15 Mult.", "type": "highlighter", "price": 3},
-            {"name": "Correction Tape", "desc": "Played key forces Grey color, but gives massive +100 Chips.", "type": "correction_tape", "price": 3},
+            {"name": "Yellow Highlighter", "desc": "Played key gives permanent +15 Hype.", "type": "highlighter", "price": 3},
+            {"name": "Correction Tape", "desc": "Played key forces Grey color, but gives massive +100 Words.", "type": "correction_tape", "price": 3},
             {"name": "The Stapler", "desc": "Staples two keys. They score twice, but must be played together.", "type": "stapler", "price": 4}
         ]
         sticker = random.choice(stickers)
@@ -264,7 +264,7 @@ class ShopState(State):
         shop_rect = shop_surf.get_rect(center=(config.SCREEN_WIDTH // 2, 30))
         surface.blit(shop_surf, shop_rect)
         
-        # Draw next blind button
+        # Draw next assignment button
         for btn in self.buttons:
             btn.draw(surface)
             

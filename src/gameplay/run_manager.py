@@ -11,9 +11,9 @@ class RunManager:
         # Persistent Run State
         self.royalties = 4          # Starting money ($4)
         self.chapter = 1            # Starting Ante (Chapter 1)
-        self.blind_index = 0        # 0: Small Blind, 1: Big Blind, 2: Boss Blind
-        self.blind_type = "small"   # "small", "big", "boss"
-        self.target_score = 500     # Score needed to win current blind
+        self.assignment_index = 0        # 0: Small Assignment, 1: Big Assignment, 2: Boss Assignment
+        self.assignment_type = "small"   # "small", "big", "boss"
+        self.target_score = 500     # Score needed to win current assignment
         
         self.tropes = []            # Active Tropes (max 5)
         self.edits = []             # Active consumable Edits (max 2)
@@ -45,26 +45,26 @@ class RunManager:
         self.target_word = ""
         self.round_history = []     # List of dicts: {"word": str, "clues": list, "score": int, "is_draft": bool}
         
-        # Boss Blind state
-        self.boss_blind = None      # Current Boss Blind name: "Minimalist", "Plagiarist", "Ghostwriter", or None
+        # Boss Assignment state
+        self.boss_assignment = None      # Current Boss Assignment name: "Minimalist", "Plagiarist", "Ghostwriter", or None
         self.boss_pool = ["Minimalist", "Plagiarist", "Ghostwriter"]
         self.selected_boss = "Minimalist"  # The boss chosen for the current Chapter's end
         
         # Red Pen modifications
         self.red_pen_green_bonus = 0  # Permanent green letter chip bonus added by Red Pen
         
-        # Choose initial boss blind for Chapter 1
-        self.roll_boss_blind()
+        # Choose initial boss assignment for Chapter 1
+        self.roll_boss_assignment()
 
-    def roll_boss_blind(self):
-        """Rolls a random boss blind for the current chapter."""
+    def roll_boss_assignment(self):
+        """Rolls a random boss assignment for the current chapter."""
         self.selected_boss = random.choice(self.boss_pool)
 
-    def get_blind_name(self):
-        if self.blind_index == 0:
-            return "Small Blind"
-        elif self.blind_index == 1:
-            return "Big Blind"
+    def get_assignment_name(self):
+        if self.assignment_index == 0:
+            return "Small Assignment"
+        elif self.assignment_index == 1:
+            return "Big Assignment"
         else:
             return f"Boss: {self.selected_boss}"
 
@@ -73,18 +73,18 @@ class RunManager:
         chapter_bases = [0, 500, 1500, 4000, 10000, 25000, 60000, 120000, 250000]
         base = chapter_bases[min(self.chapter, 8)]
         
-        if self.blind_index == 0:
+        if self.assignment_index == 0:
             self.target_score = base
-            self.blind_type = "small"
-            self.boss_blind = None
-        elif self.blind_index == 1:
+            self.assignment_type = "small"
+            self.boss_assignment = None
+        elif self.assignment_index == 1:
             self.target_score = int(base * 1.6)
-            self.blind_type = "big"
-            self.boss_blind = None
+            self.assignment_type = "big"
+            self.boss_assignment = None
         else:
             self.target_score = int(base * 2.4)
-            self.blind_type = "boss"
-            self.boss_blind = self.selected_boss
+            self.assignment_type = "boss"
+            self.boss_assignment = self.selected_boss
 
         # Debuff from Ghostwriter Trope: Target Score increases by 1.5x
         if any(t.name == "The Ghostwriter" and t.is_debuff_active for t in self.tropes):
@@ -106,7 +106,7 @@ class RunManager:
         
         # Select target word
         # If boss is Minimalist, target word must be 4 letters long!
-        if self.boss_blind == "Minimalist":
+        if self.boss_assignment == "Minimalist":
             # Generate a 4-letter word from target_words (truncate or select 4-letter)
             # Since standard wordlist contains 5-letter words, let's filter for 4-letter words or select a 4-letter target
             self.target_word = self.get_4_letter_target()
@@ -116,7 +116,7 @@ class RunManager:
         event_bus.bus.publish('ON_ROUND_START')
 
     def get_4_letter_target(self):
-        """Generates or selects a 4-letter target word for the Minimalist Boss Blind."""
+        """Generates or selects a 4-letter target word for the Minimalist Boss Assignment."""
         # Let's extract 4-letter words from standard word list or create a pool
         words_4 = ["book", "page", "edit", "plot", "word", "desk", "read", "type", "inked", "bind"]
         # Strip to 4 letters to be safe
@@ -131,7 +131,7 @@ class RunManager:
         guess = guess.lower().strip()
         
         # Validity checks
-        if self.boss_blind == "Minimalist":
+        if self.boss_assignment == "Minimalist":
             if len(guess) != 4:
                 return {"error": "Must submit a 4-letter word!"}
         else:
@@ -147,9 +147,9 @@ class RunManager:
             clues = check_word(guess, self.target_word)
             result = {
                 "score": 0,
-                "chips": 0,
-                "mult": 1.0,
-                "x_mults": [],
+                "words": 0,
+                "hype": 1.0,
+                "x_hypes": [],
                 "clues": clues,
                 "pattern": "Plagiarized"
             }
@@ -172,7 +172,7 @@ class RunManager:
         # Validate against dictionary (if no wildcards or if we check letters)
         if not is_ghostwriter_active or "*" not in guess:
             # For Minimalist, we accept common 4 letter words or allow any guess for flexibility
-            if self.boss_blind == "Minimalist":
+            if self.boss_assignment == "Minimalist":
                 pass # Accept 4-letter guess
             elif not self.dictionary.is_valid_guess(guess):
                 return {"error": "Not in word list!"}
@@ -207,9 +207,9 @@ class RunManager:
                 if self.keyboard_mods.get(char, {}).get("removed", False):
                     return {"error": f"Red Pen debuff! Letter '{char.upper()}' has been removed."}
 
-        # Handle Boss Blind: The Plagiarist
+        # Handle Boss Assignment: The Plagiarist
         # Target word is guaranteed to be an anagram of the very first word submitted.
-        if self.boss_blind == "Plagiarist" and len(self.round_history) == 0 and not is_draft:
+        if self.boss_assignment == "Plagiarist" and len(self.round_history) == 0 and not is_draft:
             # We set the target word to an anagram of the first guess!
             self.target_word = self.get_plagiarist_anagram(guess)
 
@@ -239,9 +239,9 @@ class RunManager:
             self.drafts_left -= 1
             result = {
                 "score": 0,
-                "chips": 0,
-                "mult": 1.0,
-                "x_mults": [],
+                "words": 0,
+                "hype": 1.0,
+                "x_hypes": [],
                 "clues": clues,
                 "pattern": "Drafted"
             }
@@ -250,18 +250,18 @@ class RunManager:
             
             # Temporary hook for Red Pen green bonus
             # We can register Red Pen listener to ON_LETTER_SCORED, or apply it here:
-            result = calculate_word_score(eval_guess_str, self.target_word, self.style_guides, self.keyboard_mods, boss_blind=self.boss_blind)
+            result = calculate_word_score(eval_guess_str, self.target_word, self.style_guides, self.keyboard_mods, boss_assignment=self.boss_assignment)
             
             # Apply Red Pen green letter boost if green
             if self.red_pen_green_bonus > 0:
                 for idx, clue in enumerate(clues):
                     if clue == 'green':
-                        result["chips"] += self.red_pen_green_bonus
+                        result["words"] += self.red_pen_green_bonus
                         # Re-calculate score total
-                        total_mult = result["mult"]
-                        for xm in result["x_mults"]:
-                            total_mult *= xm
-                        result["score"] = int(result["chips"] * total_mult)
+                        total_hype = result["hype"]
+                        for xm in result["x_hypes"]:
+                            total_hype *= xm
+                        result["score"] = int(result["words"] * total_hype)
             
             self.round_score += result["score"]
             
@@ -318,15 +318,15 @@ class RunManager:
             return "lose"
         return "continue"
 
-    def advance_blind(self):
-        """Advances to the next blind. If chapter boss is beaten, moves to next chapter."""
-        self.blind_index += 1
-        if self.blind_index > 2:
+    def advance_assignment(self):
+        """Advances to the next assignment. If chapter boss is beaten, moves to next chapter."""
+        self.assignment_index += 1
+        if self.assignment_index > 2:
             self.chapter += 1
-            self.blind_index = 0
+            self.assignment_index = 0
             # Reset any temporary debuffs like Red Pen removed keys for the new chapter
             for char in self.keyboard_mods:
                 self.keyboard_mods[char]["removed"] = False
-            self.roll_boss_blind()
+            self.roll_boss_assignment()
             
         self.update_target_score()

@@ -45,12 +45,12 @@ class ScoringState(State):
         self.timer = 0.0
         
         # Ticking numbers
-        self.displayed_chips = 0
-        self.displayed_mult = 1.0
-        self.displayed_x_mults = []
-        self.target_chips = 0
-        self.target_mult = 1.0
-        self.target_x_mults = []
+        self.displayed_words = 0
+        self.displayed_hype = 1.0
+        self.displayed_x_hypes = []
+        self.target_words = 0
+        self.target_hype = 1.0
+        self.target_x_hypes = []
         
         # Floating animations
         self.floats = []
@@ -67,12 +67,12 @@ class ScoringState(State):
             self.anim_stage = "done"
             self.letter_idx = len(self.guess)
             self.timer = 0.0
-            self.displayed_chips = 0
-            self.displayed_mult = 1.0
-            self.displayed_x_mults = []
-            self.target_chips = 0
-            self.target_mult = 1.0
-            self.target_x_mults = []
+            self.displayed_words = 0
+            self.displayed_hype = 1.0
+            self.displayed_x_hypes = []
+            self.target_words = 0
+            self.target_hype = 1.0
+            self.target_x_hypes = []
             config.sounds.play("error")
             return
             
@@ -81,25 +81,25 @@ class ScoringState(State):
         self.timer = 0.0
         
         # Reset visual targets
-        self.displayed_chips = 0
-        self.displayed_mult = 1.0
-        self.displayed_x_mults = []
+        self.displayed_words = 0
+        self.displayed_hype = 1.0
+        self.displayed_x_hypes = []
         
-        # Gather base chips and base mult based on pattern
+        # Gather base words and base hype based on pattern
         pattern_name = self.result["pattern"]
         
         level = self.run_manager.style_guides.get(pattern_name, 1)
         base_info = STYLE_GUIDES_DATA[pattern_name]
         
         # Starting anim values
-        self.displayed_chips = base_info["base_chips"] + (level - 1) * base_info["upgrade_chips"]
-        self.displayed_mult = base_info["base_mult"] + (level - 1) * base_info["upgrade_mult"]
-        self.displayed_x_mults = []
+        self.displayed_words = base_info["base_words"] + (level - 1) * base_info["upgrade_words"]
+        self.displayed_hype = base_info["base_hype"] + (level - 1) * base_info["upgrade_hype"]
+        self.displayed_x_hypes = []
         
         # Final target values
-        self.target_chips = self.result["chips"]
-        self.target_mult = self.result["mult"]
-        self.target_x_mults = list(self.result["x_mults"])
+        self.target_words = self.result["words"]
+        self.target_hype = self.result["hype"]
+        self.target_x_hypes = list(self.result["x_hypes"])
         
         config.sounds.play("stamp")
         
@@ -130,9 +130,9 @@ class ScoringState(State):
             if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
                 if self.anim_stage != "done":
                     # Instant complete
-                    self.displayed_chips = self.target_chips
-                    self.displayed_mult = self.target_mult
-                    self.displayed_x_mults = list(self.target_x_mults)
+                    self.displayed_words = self.target_words
+                    self.displayed_hype = self.target_hype
+                    self.displayed_x_hypes = list(self.target_x_hypes)
                     self.anim_stage = "done"
                     config.sounds.play("bell")
                 else:
@@ -142,9 +142,9 @@ class ScoringState(State):
                 if event.key in [pygame.K_RETURN, pygame.K_SPACE]:
                     if self.anim_stage != "done":
                         # Instant complete
-                        self.displayed_chips = self.target_chips
-                        self.displayed_mult = self.target_mult
-                        self.displayed_x_mults = list(self.target_x_mults)
+                        self.displayed_words = self.target_words
+                        self.displayed_hype = self.target_hype
+                        self.displayed_x_hypes = list(self.target_x_hypes)
                         self.anim_stage = "done"
                         config.sounds.play("bell")
                     else:
@@ -196,7 +196,7 @@ class ScoringState(State):
                     char = self.guess[self.letter_idx]
                     clue = self.result["clues"][self.letter_idx]
                     from src.gameplay.scoring import LETTER_CHIPS
-                    let_chips = LETTER_CHIPS.get(char, 1)
+                    let_words = LETTER_CHIPS.get(char, 1)
                     
                     config.sounds.play_clack()
                     
@@ -232,35 +232,35 @@ class ScoringState(State):
                     repeat = 2 if mods.get("stapler", False) else 1
                     
                     for _ in range(repeat):
-                        added_chips = 0
-                        added_mult = 0.0
+                        added_words = 0
+                        added_hype = 0.0
                         added_x = 1.0
                         
                         if mods.get("highlighter", False):
-                            added_mult += 15.0
+                            added_hype += 15.0
                         if mods.get("coffee_ring", False):
-                            added_chips += 50
+                            added_words += 50
                             
                         if clue == 'green':
-                            added_chips += 5
+                            added_words += 5
                         elif clue == 'yellow':
-                            added_chips += 1
+                            added_words += 1
                         else:
-                            added_chips += 0
+                            added_words += 0
                             
-                        self.displayed_chips += added_chips
-                        self.displayed_mult += added_mult
+                        self.displayed_words += added_words
+                        self.displayed_hype += added_hype
                         if added_x > 1.0:
-                            self.displayed_x_mults.append(added_x)
+                            self.displayed_x_hypes.append(added_x)
                             
                         # Float from the letter directly down to the placard
-                        if added_chips > 0:
+                        if added_words > 0:
                             float_color = config.COLOR_CLUE_YELLOW if clue == 'yellow' else config.COLOR_CLUE_GREEN
-                            self.spawn_float(f"+{added_chips} Chips", letter_center_x, letter_center_y, float_color)
-                        if added_mult > 0:
-                            self.spawn_float(f"+{added_mult} Mult", letter_center_x, letter_center_y, config.COLOR_CLUE_YELLOW)
+                            self.spawn_float(f"+{added_words} Words", letter_center_x, letter_center_y, float_color)
+                        if added_hype > 0:
+                            self.spawn_float(f"+{added_hype} Hype", letter_center_x, letter_center_y, config.COLOR_CLUE_YELLOW)
                         if added_x > 1.0:
-                            self.spawn_float(f"x{added_x} Mult", letter_center_x, letter_center_y, config.COLOR_HIGHLIGHTER)
+                            self.spawn_float(f"x{added_x} Hype", letter_center_x, letter_center_y, config.COLOR_HIGHLIGHTER)
                             
                     self.letter_idx += 1
                 else:
@@ -270,9 +270,9 @@ class ScoringState(State):
         elif self.anim_stage == "final_calc":
             if self.timer >= 0.4:
                 # Sync final math targets
-                self.displayed_chips = self.target_chips
-                self.displayed_mult = self.target_mult
-                self.displayed_x_mults = list(self.target_x_mults)
+                self.displayed_words = self.target_words
+                self.displayed_hype = self.target_hype
+                self.displayed_x_hypes = list(self.target_x_hypes)
                 
                 config.sounds.play("bell")
                 self.shake.trigger(intensity=8, duration=0.3)
@@ -352,8 +352,8 @@ class ScoringState(State):
             fill_rect = pygame.Rect(60, 210, int(270 * pct), 20)
             pygame.draw.rect(surface, config.COLOR_CLUE_GREEN, fill_rect, border_radius=4)
             
-        stage_name = self.run_manager.get_blind_name()
-        stage_surf = self.ui_bold.render(stage_name, True, config.COLOR_ACCENT if self.run_manager.boss_blind else config.COLOR_TEXT_LIGHT)
+        stage_name = self.run_manager.get_assignment_name()
+        stage_surf = self.ui_bold.render(stage_name, True, config.COLOR_ACCENT if self.run_manager.boss_assignment else config.COLOR_TEXT_LIGHT)
         surface.blit(stage_surf, (60, 250))
         
         # Resources left
@@ -504,22 +504,22 @@ class ScoringState(State):
         pygame.draw.rect(surface, (18, 19, 24), placard_rect, border_radius=8)
         pygame.draw.rect(surface, config.COLOR_TEXT_MUTED if self.anim_stage != "done" else config.COLOR_HIGHLIGHTER, placard_rect, width=2, border_radius=8)
         
-        # Draw Chips
-        chips_str = f"{int(self.displayed_chips)}"
-        chips_surf = self.math_font.render(chips_str, True, config.COLOR_CLUE_GREEN)
-        surface.blit(chips_surf, (placard_rect.x + 15, placard_rect.y + 10))
+        # Draw Words
+        words_str = f"{int(self.displayed_words)}"
+        words_surf = self.math_font.render(words_str, True, config.COLOR_CLUE_GREEN)
+        surface.blit(words_surf, (placard_rect.x + 15, placard_rect.y + 10))
         
         # Times
         times_surf = self.math_font.render("x", True, config.COLOR_TEXT_MUTED)
         surface.blit(times_surf, (placard_rect.x + 130, placard_rect.y + 10))
         
-        # Draw Mult
-        curr_mult = self.displayed_mult
-        for xm in self.displayed_x_mults:
-            curr_mult *= xm
-        mult_str = f"{curr_mult:.1f}"
-        mult_surf = self.math_font.render(mult_str, True, config.COLOR_CLUE_YELLOW)
-        surface.blit(mult_surf, (placard_rect.x + 165, placard_rect.y + 10))
+        # Draw Hype
+        curr_hype = self.displayed_hype
+        for xm in self.displayed_x_hypes:
+            curr_hype *= xm
+        hype_str = f"{curr_hype:.1f}"
+        hype_surf = self.math_font.render(hype_str, True, config.COLOR_CLUE_YELLOW)
+        surface.blit(hype_surf, (placard_rect.x + 165, placard_rect.y + 10))
         
         # Equals
         if self.anim_stage == "done":

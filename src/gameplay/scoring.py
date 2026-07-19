@@ -2,8 +2,8 @@ import os
 from src.engine import event_bus
 from src.content.style_guides import STYLE_GUIDES_DATA
 
-# Base chip values for each letter
-LETTER_CHIPS = {
+# Base word values for each letter
+LETTER_WORDS = {
     'e': 1, 't': 1, 'a': 1, 'o': 1, 'i': 1, 'n': 1, 's': 1,
     'h': 2, 'r': 2, 'd': 2, 'l': 2,
     'c': 3, 'u': 3, 'm': 3, 'w': 3, 'f': 3, 'g': 3, 'y': 3,
@@ -76,27 +76,27 @@ def identify_pattern(clues, guess, target):
 
 class ScoreManager:
     def __init__(self):
-        self.chips = 0
-        self.mult = 0.0
-        self.x_mults = []  # List of multiplicative multipliers (e.g. x1.5, x3.0)
+        self.words = 0
+        self.hype = 0.0
+        self.x_hypes = []  # List of multiplicative multipliers (e.g. x1.5, x3.0)
 
-    def add_chips(self, amount):
-        self.chips += amount
+    def add_words(self, amount):
+        self.words += amount
 
-    def add_mult(self, amount):
-        self.mult += amount
+    def add_hype(self, amount):
+        self.hype += amount
 
-    def add_x_mult(self, multiplier):
-        self.x_mults.append(multiplier)
+    def add_x_hype(self, multiplier):
+        self.x_hypes.append(multiplier)
 
     def calculate_total(self):
-        """Calculates final score: Chips * (Mult * Product of x_mults)"""
-        total_mult = self.mult
-        for xm in self.x_mults:
-            total_mult *= xm
+        """Calculates final score: Words * (Hype * Product of x_hypes)"""
+        total_hype = self.hype
+        for xm in self.x_hypes:
+            total_hype *= xm
         # Multiplier cannot fall below 1
-        total_mult = max(1.0, total_mult)
-        return int(self.chips * total_mult)
+        total_hype = max(1.0, total_hype)
+        return int(self.words * total_hype)
 
 def calculate_word_score(guess, target, style_guides_levels, keyboard_mods, boss_blind=None):
     """
@@ -127,11 +127,11 @@ def calculate_word_score(guess, target, style_guides_levels, keyboard_mods, boss
     level = style_guides_levels.get(pattern_name, 1)
     
     # Base = Starting Value + (Level - 1) * Level Increment
-    base_chips = base_info["base_chips"] + (level - 1) * base_info["upgrade_chips"]
-    base_mult = base_info["base_mult"] + (level - 1) * base_info["upgrade_mult"]
+    base_words = base_info["base_words"] + (level - 1) * base_info["upgrade_words"]
+    base_hype = base_info["base_hype"] + (level - 1) * base_info["upgrade_hype"]
     
-    score_mgr.add_chips(base_chips)
-    score_mgr.add_mult(base_mult)
+    score_mgr.add_words(base_words)
+    score_mgr.add_hype(base_hype)
     
     # 2. Score Individual Letters
     for i, letter in enumerate(guess):
@@ -150,20 +150,20 @@ def calculate_word_score(guess, target, style_guides_levels, keyboard_mods, boss
             # Letter base points: equal for all characters, decided only by clue color:
             # green=5, yellow=1, grey=0
             if clue == 'green':
-                let_chips = 5
+                let_words = 5
             elif clue == 'yellow':
-                let_chips = 1
+                let_words = 1
             else:
-                let_chips = 0
+                let_words = 0
                 
             # Add mods bonuses
             if is_highlighted:
-                score_mgr.add_mult(15.0)
+                score_mgr.add_hype(15.0)
             if is_correction_tape:
-                score_mgr.add_chips(100)
+                score_mgr.add_words(100)
                 
-            # Add letter chips
-            score_mgr.add_chips(let_chips)
+            # Add letter words
+            score_mgr.add_words(let_words)
                 
         # Fire event for letter-level custom adjustments (e.g. from Tropes)
         event_bus.bus.publish('ON_LETTER_SCORED', letter, i, clue, score_mgr)
@@ -174,9 +174,9 @@ def calculate_word_score(guess, target, style_guides_levels, keyboard_mods, boss
     final_score = score_mgr.calculate_total()
     return {
         "score": final_score,
-        "chips": score_mgr.chips,
-        "mult": score_mgr.mult,
-        "x_mults": score_mgr.x_mults,
+        "words": score_mgr.words,
+        "hype": score_mgr.hype,
+        "x_hypes": score_mgr.x_hypes,
         "clues": clues,
         "pattern": pattern_name
     }
