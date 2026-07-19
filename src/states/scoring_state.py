@@ -90,8 +90,8 @@ class ScoringState(State):
             "Masterpiece": {"chips": 250, "mult": 8.0, "level_chips": 80, "level_mult": 6.0},
             "Jumble": {"chips": 100, "mult": 4.0, "level_chips": 40, "level_mult": 4.0},
             "Shot in the Dark": {"chips": 20, "mult": 2.0, "level_chips": 15, "level_mult": 2.0},
-            "Total Rewrite": {"chips": 50, "mult": 1.0, "level_chips": 30, "level_mult": 3.0},
-            "Standard Submission": {"chips": 10, "mult": 1.0, "level_chips": 10, "level_mult": 1.0}
+            "Standard Submission": {"chips": 10, "mult": 1.0, "level_chips": 10, "level_mult": 1.0},
+            "Total Rewrite": {"chips": 5, "mult": 1.0, "level_chips": 5, "level_mult": 1.0}
         }
         
         level = self.run_manager.style_guides.get(pattern_name, 1)
@@ -486,7 +486,6 @@ class ScoringState(State):
                 col = config.COLOR_CLUE_EMPTY
                 
             pygame.draw.rect(surface, col, box_rect, border_radius=4)
-            pygame.draw.rect(surface, config.COLOR_TEXT_DARK, box_rect, width=0, border_radius=4)
             
             # Highlight border for the active letter currently being calculated for points
             if l_idx == self.letter_idx and self.anim_stage == "letters":
@@ -500,6 +499,13 @@ class ScoringState(State):
         # 3. Draw Scoring Math Ticker Placard directly at the bottom of the paper
         # Takes the place of the active typewriter input
         placard_rect = pygame.Rect(paper_rect.centerx - 190, 345, 380, 50)
+        
+        # Display the active Combo Pattern prominently right above the placard
+        pattern_str = self.result.get("pattern", "Standard Submission")
+        pattern_surf = self.ui_bold.render(pattern_str.upper(), True, config.COLOR_CLUE_YELLOW)
+        pattern_rect = pattern_surf.get_rect(center=(paper_rect.centerx, placard_rect.y - 15))
+        surface.blit(pattern_surf, pattern_rect)
+
         pygame.draw.rect(surface, (18, 19, 24), placard_rect, border_radius=8)
         pygame.draw.rect(surface, config.COLOR_TEXT_MUTED if self.anim_stage != "done" else config.COLOR_HIGHLIGHTER, placard_rect, width=2, border_radius=8)
         

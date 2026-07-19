@@ -32,10 +32,10 @@ STYLE_GUIDES_DATA = {
     "Total Rewrite": {
         "display_name": "The Total Rewrite",
         "description": "5 Grey letters. Guess a word with zero correct letters.",
-        "base_chips": 50,
+        "base_chips": 5,
         "base_mult": 1.0,
-        "upgrade_chips": 30,
-        "upgrade_mult": 3.0,
+        "upgrade_chips": 5,
+        "upgrade_mult": 1.0,
         "price": 2
     },
     "Standard Submission": {
