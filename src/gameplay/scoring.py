@@ -108,6 +108,12 @@ def calculate_word_score(guess, target, style_guides_levels, keyboard_mods, boss
     guess = guess.lower()
     target = target.lower()
     clues = check_word(guess, target)
+    
+    # Pre-pattern evaluation: Correction Tape forces clues to Grey
+    for i, letter in enumerate(guess):
+        if keyboard_mods.get(letter, {}).get("correction_tape", False):
+            clues[i] = 'grey'
+            
     pattern_name = identify_pattern(clues, guess, target)
     
     # Plagiarist Boss Blind Jumble exploit prevention
@@ -134,7 +140,7 @@ def calculate_word_score(guess, target, style_guides_levels, keyboard_mods, boss
         # Check keyboard mods for this letter
         mods = keyboard_mods.get(letter, {})
         is_highlighted = mods.get("highlighter", False)
-        is_coffee_ring = mods.get("coffee_ring", False)
+        is_correction_tape = mods.get("correction_tape", False)
         is_stapled = mods.get("stapler", False)
         
         # Stapler causes the letter's scoring to trigger twice
@@ -153,8 +159,8 @@ def calculate_word_score(guess, target, style_guides_levels, keyboard_mods, boss
             # Add mods bonuses
             if is_highlighted:
                 score_mgr.add_mult(15.0)
-            if is_coffee_ring:
-                score_mgr.add_chips(50)
+            if is_correction_tape:
+                score_mgr.add_chips(100)
                 
             # Add letter chips
             score_mgr.add_chips(let_chips)

@@ -101,7 +101,7 @@ class ShopState(State):
         # 4. Card 4: Keyboard sticker mod
         stickers = [
             {"name": "Yellow Highlighter", "desc": "Played key gives permanent +15 Mult.", "type": "highlighter", "price": 3},
-            {"name": "Coffee Mug Ring", "desc": "Played key gives +50 chips. clue color redacted.", "type": "coffee_ring", "price": 3},
+            {"name": "Correction Tape", "desc": "Played key forces Grey color, but gives massive +100 Chips.", "type": "correction_tape", "price": 3},
             {"name": "The Stapler", "desc": "Staples two keys. They score twice, but must be played together.", "type": "stapler", "price": 4}
         ]
         sticker = random.choice(stickers)
@@ -222,10 +222,10 @@ class ShopState(State):
                         self.run_manager.keyboard_mods[char]["highlighter"] = True
                         self.pending_sticker = "none"
                         self.particles.spawn(key_rect.centerx, key_rect.centery, config.COLOR_HIGHLIGHTER, 12)
-                    elif self.pending_sticker == "coffee_ring":
-                        self.run_manager.keyboard_mods[char]["coffee_ring"] = True
+                    elif self.pending_sticker == "correction_tape":
+                        self.run_manager.keyboard_mods[char]["correction_tape"] = True
                         self.pending_sticker = "none"
-                        self.particles.spawn(key_rect.centerx, key_rect.centery, config.COLOR_CLUE_REDACTED, 12)
+                        self.particles.spawn(key_rect.centerx, key_rect.centery, (240, 240, 240), 12)
                     elif self.pending_sticker == "stapler":
                         self.stapler_first_key = char
                         self.pending_sticker = "stapler_second"
@@ -396,7 +396,7 @@ class ShopState(State):
                 # Check mods
                 mods = self.run_manager.keyboard_mods.get(char, {})
                 is_highlighter = mods.get("highlighter", False)
-                is_coffee_ring = mods.get("coffee_ring", False)
+                is_correction_tape = mods.get("correction_tape", False)
                 is_stapler = mods.get("stapler", False)
                 is_removed = mods.get("removed", False)
                 
@@ -415,8 +415,8 @@ class ShopState(State):
                 # Draw stickers
                 if is_highlighter and not is_removed:
                     pygame.draw.rect(surface, config.COLOR_HIGHLIGHTER, key_rect, width=2, border_radius=4)
-                if is_coffee_ring and not is_removed:
-                    pygame.draw.circle(surface, config.COLOR_CLUE_REDACTED, key_rect.center, 10, width=2)
+                if is_correction_tape and not is_removed:
+                    pygame.draw.line(surface, (230, 230, 240), (key_rect.x + 4, key_rect.bottom - 10), (key_rect.right - 4, key_rect.bottom - 10), 8)
                 if is_stapler and not is_removed:
                     pygame.draw.line(surface, (180, 180, 190), (key_rect.x + 6, key_rect.y + 4), (key_rect.right - 6, key_rect.y + 4), 2)
                     pygame.draw.line(surface, (180, 180, 190), (key_rect.x + 6, key_rect.bottom - 4), (key_rect.right - 6, key_rect.bottom - 4), 2)
