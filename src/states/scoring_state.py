@@ -219,8 +219,20 @@ class ScoringState(State):
                     letter_center_x = start_x + self.letter_idx * (box_w + box_gap) + box_w // 2
                     letter_center_y = row_y + box_w // 2
                     
+                    # Determine color-coordinated particles
+                    if clue == "green":
+                        p_color = config.COLOR_CLUE_GREEN
+                    elif clue == "yellow":
+                        p_color = config.COLOR_CLUE_YELLOW
+                    elif clue == "grey":
+                        p_color = config.COLOR_CLUE_GREY
+                    elif clue == "redacted":
+                        p_color = config.COLOR_CLUE_REDACTED
+                    else:
+                        p_color = config.COLOR_TEXT_LIGHT
+                        
                     # Spawn typewriter puff particles
-                    self.particles.spawn(letter_center_x, letter_center_y, config.COLOR_TEXT_LIGHT, count=5)
+                    self.particles.spawn(letter_center_x, letter_center_y, p_color, count=8)
                     
                     mods = self.run_manager.keyboard_mods.get(char, {})
                     repeat = 2 if mods.get("stapler", False) else 1
@@ -460,24 +472,24 @@ class ScoringState(State):
         for l_idx, char in enumerate(self.guess):
             box_rect = pygame.Rect(start_x + l_idx * (box_w + box_gap), row_y, box_w, box_w)
             
-            # Determine color reveal state (always colored from the start)
-            clue = clues[l_idx]
-            if clue == "green":
-                col = config.COLOR_CLUE_GREEN
-            elif clue == "yellow":
-                col = config.COLOR_CLUE_YELLOW
-            elif clue == "grey":
-                col = config.COLOR_CLUE_GREY
-            elif clue == "redacted":
-                col = config.COLOR_CLUE_REDACTED
+            # Determine color reveal state
+            if l_idx < self.letter_idx:
+                clue = clues[l_idx]
+                if clue == "green":
+                    col = config.COLOR_CLUE_GREEN
+                elif clue == "yellow":
+                    col = config.COLOR_CLUE_YELLOW
+                elif clue == "grey":
+                    col = config.COLOR_CLUE_GREY
+                elif clue == "redacted":
+                    col = config.COLOR_CLUE_REDACTED
+                else:
+                    col = config.COLOR_CLUE_EMPTY
             else:
                 col = config.COLOR_CLUE_EMPTY
                 
             pygame.draw.rect(surface, col, box_rect, border_radius=4)
-            
-            # Highlight border for the active letter currently being calculated for points
-            if l_idx == self.letter_idx and self.anim_stage == "letters":
-                pygame.draw.rect(surface, config.COLOR_HIGHLIGHTER, box_rect, width=2, border_radius=4)
+            pygame.draw.rect(surface, config.COLOR_TEXT_DARK, box_rect, width=1 if l_idx >= self.letter_idx else 0, border_radius=4)
             
             let_color = config.COLOR_TEXT_LIGHT if col != config.COLOR_CLUE_EMPTY else config.COLOR_TEXT_DARK
             let_surf = self.typewriter_font.render(char.upper(), True, let_color)
