@@ -403,14 +403,19 @@ class GameState(State):
                     
                 pygame.draw.rect(surface, col, box_rect, border_radius=4)
                 
-                # Letter
-                let_surf = self.typewriter_font.render(char.upper(), True, config.COLOR_TEXT_DARK)
+                # Letter (Contrast check)
+                let_color = config.COLOR_TEXT_LIGHT if col != config.COLOR_CLUE_EMPTY else config.COLOR_TEXT_DARK
+                let_surf = self.typewriter_font.render(char.upper(), True, let_color)
                 let_rect = let_surf.get_rect(center=box_rect.center)
                 surface.blit(let_surf, let_rect)
                 
             # Score or draft text next to row
-            lbl_color = config.COLOR_ROYALTIES if not is_draft else config.COLOR_CLUE_YELLOW
-            lbl_str = f"+{score:,}" if not is_draft else "DRAFT"
+            if entry.get("is_plagiarized"):
+                lbl_color = (231, 76, 60)
+                lbl_str = "PLAGIARIZED"
+            else:
+                lbl_color = config.COLOR_ROYALTIES if not is_draft else config.COLOR_CLUE_YELLOW
+                lbl_str = f"+{score:,}" if not is_draft else "DRAFT"
             lbl_surf = self.ui_font.render(lbl_str, True, lbl_color)
             surface.blit(lbl_surf, (start_x + total_w + 12, row_y + 10))
             

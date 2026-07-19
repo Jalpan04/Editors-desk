@@ -62,11 +62,11 @@ class RunManager:
 
     def get_blind_name(self):
         if self.blind_index == 0:
-            return "Small Blind: Draft Manuscript"
+            return "Small Blind"
         elif self.blind_index == 1:
-            return "Big Blind: Proofread Manuscript"
+            return "Big Blind"
         else:
-            return f"Boss Blind: {self.selected_boss}"
+            return f"Boss: {self.selected_boss}"
 
     def update_target_score(self):
         
