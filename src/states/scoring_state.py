@@ -3,6 +3,7 @@ import random
 from src import config
 from src.engine.state_machine import State
 from src.engine.ui import Button, ParticleSystem, ScreenShake
+from src.content.style_guides import STYLE_GUIDES_DATA
 
 class ScoringState(State):
     def __init__(self, state_machine, run_manager):
@@ -86,20 +87,13 @@ class ScoringState(State):
         
         # Gather base chips and base mult based on pattern
         pattern_name = self.result["pattern"]
-        pattern_bases = {
-            "Masterpiece": {"chips": 250, "mult": 10.0, "level_chips": 50, "level_mult": 2.0},
-            "Jumble": {"chips": 100, "mult": 6.0, "level_chips": 30, "level_mult": 1.5},
-            "Shot in the Dark": {"chips": 60, "mult": 4.0, "level_chips": 20, "level_mult": 1.0},
-            "Standard Submission": {"chips": 30, "mult": 3.0, "level_chips": 10, "level_mult": 0.5},
-            "Total Rewrite": {"chips": 10, "mult": 1.0, "level_chips": 5, "level_mult": 1.0}
-        }
         
         level = self.run_manager.style_guides.get(pattern_name, 1)
-        base_info = pattern_bases[pattern_name]
+        base_info = STYLE_GUIDES_DATA[pattern_name]
         
         # Starting anim values
-        self.displayed_chips = base_info["chips"] + (level - 1) * base_info["level_chips"]
-        self.displayed_mult = base_info["mult"] + (level - 1) * base_info["level_mult"]
+        self.displayed_chips = base_info["base_chips"] + (level - 1) * base_info["upgrade_chips"]
+        self.displayed_mult = base_info["base_mult"] + (level - 1) * base_info["upgrade_mult"]
         self.displayed_x_mults = []
         
         # Final target values

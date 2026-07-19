@@ -1,5 +1,6 @@
 import os
 from src.engine import event_bus
+from src.content.style_guides import STYLE_GUIDES_DATA
 
 # Base chip values for each letter
 LETTER_CHIPS = {
@@ -47,18 +48,31 @@ def identify_pattern(clues, guess, target):
     """
     green_count = clues.count('green')
     yellow_count = clues.count('yellow')
-    grey_count = clues.count('grey')
+    
+    combo_map = {
+        (0, 0): "The Total Rewrite",
+        (0, 1): "The Typo",
+        (0, 2): "The Brainstorm",
+        (0, 3): "The Outline",
+        (0, 4): "The Rough Draft",
+        (0, 5): "The Jumble",
+        (1, 0): "The Shot in the Dark",
+        (1, 1): "The Spark",
+        (1, 2): "The Concept",
+        (1, 3): "The Framework",
+        (1, 4): "The Paradox",
+        (2, 0): "The Foundation",
+        (2, 1): "The Direction",
+        (2, 2): "The Revision",
+        (2, 3): "The Anagram",
+        (3, 0): "The Solid Lead",
+        (3, 1): "The Near Miss",
+        (3, 2): "The Spoonerism",
+        (4, 0): "The Typographical Error",
+        (5, 0): "The Masterpiece"
+    }
 
-    if green_count == 5:
-        return "Masterpiece"
-    elif yellow_count == 5:
-        return "Jumble"
-    elif green_count == 1 and grey_count == 4:
-        return "Shot in the Dark"
-    elif grey_count == 5:
-        return "Total Rewrite"
-    else:
-        return "Standard Submission"
+    return combo_map.get((green_count, yellow_count), "Standard Submission")
 
 class ScoreManager:
     def __init__(self):
@@ -97,26 +111,18 @@ def calculate_word_score(guess, target, style_guides_levels, keyboard_mods, boss
     pattern_name = identify_pattern(clues, guess, target)
     
     # Plagiarist Boss Blind Jumble exploit prevention
-    if boss_blind == "Plagiarist" and pattern_name == "Jumble":
-        pattern_name = "Standard Submission"
+    if boss_blind == "Plagiarist" and pattern_name == "The Jumble":
+        pattern_name = "The Rough Draft" # Downgrade to 4 Yellows for boss logic
         
     score_mgr = ScoreManager()
     
     # 1. Base Score from Style Guide / Pattern Level
-    pattern_bases = {
-        "Masterpiece": {"chips": 250, "mult": 10.0, "level_chips": 50, "level_mult": 2.0},
-        "Jumble": {"chips": 100, "mult": 6.0, "level_chips": 30, "level_mult": 1.5},
-        "Shot in the Dark": {"chips": 60, "mult": 4.0, "level_chips": 20, "level_mult": 1.0},
-        "Standard Submission": {"chips": 30, "mult": 3.0, "level_chips": 10, "level_mult": 0.5},
-        "Total Rewrite": {"chips": 10, "mult": 1.0, "level_chips": 5, "level_mult": 1.0}
-    }
-    
-    base_info = pattern_bases[pattern_name]
+    base_info = STYLE_GUIDES_DATA[pattern_name]
     level = style_guides_levels.get(pattern_name, 1)
     
     # Base = Starting Value + (Level - 1) * Level Increment
-    base_chips = base_info["chips"] + (level - 1) * base_info["level_chips"]
-    base_mult = base_info["mult"] + (level - 1) * base_info["level_mult"]
+    base_chips = base_info["base_chips"] + (level - 1) * base_info["upgrade_chips"]
+    base_mult = base_info["base_mult"] + (level - 1) * base_info["upgrade_mult"]
     
     score_mgr.add_chips(base_chips)
     score_mgr.add_mult(base_mult)

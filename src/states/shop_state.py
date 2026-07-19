@@ -3,7 +3,7 @@ import random
 from src import config
 from src.engine.state_machine import State
 from src.engine.ui import Button, ParticleSystem
-from src.content.style_guides import StyleGuideUpgrade
+from src.content.style_guides import StyleGuideUpgrade, STYLE_GUIDES_DATA
 from src.content.tropes import create_all_tropes
 from src.content.edits import create_all_edits
 
@@ -62,12 +62,12 @@ class ShopState(State):
         self.shop_items.clear()
         
         # 1. Card 1: Style Guide upgrade
-        patterns = ["Masterpiece", "Jumble", "Shot in the Dark", "Total Rewrite", "Standard Submission"]
+        patterns = list(STYLE_GUIDES_DATA.keys())
         pat = random.choice(patterns)
         self.shop_items.append({
             "type": "style_guide",
             "item_obj": StyleGuideUpgrade(pat),
-            "price": 3 if pat in ["Masterpiece", "Jumble"] else 2,
+            "price": STYLE_GUIDES_DATA[pat]["price"],
             "sold": False
         })
         
