@@ -64,7 +64,7 @@ class PurpleProseTrope(Trope):
                 score_manager.add_chips(let_chips + 20)
                 score_manager.add_mult(1.0)
             else:
-                score_manager.add_chips(let_chips)
+                score_manager.add_chips(0)
 
 
 class RedPenTrope(Trope):

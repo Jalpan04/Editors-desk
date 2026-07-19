@@ -152,7 +152,7 @@ def calculate_word_score(guess, target, style_guides_levels, keyboard_mods, boss
                 score_mgr.add_chips(let_chips + 20)
                 score_mgr.add_mult(1.0)
             else:  # grey
-                score_mgr.add_chips(let_chips)
+                score_mgr.add_chips(0)
                 
         # Fire event for letter-level custom adjustments (e.g. from Tropes)
         event_bus.bus.publish('ON_LETTER_SCORED', letter, i, clue, score_mgr)
