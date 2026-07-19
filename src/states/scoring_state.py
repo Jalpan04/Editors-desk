@@ -36,6 +36,7 @@ class ScoringState(State):
         self.result = {}
         self.guess = ""
         self.score_ticker = 0
+        self.auto_continue_timer = 0.0
         
         # Animation states: "init", "letters", "final_calc", "done"
         self.anim_stage = "init"
@@ -57,6 +58,7 @@ class ScoringState(State):
         self.result = kwargs.get("result", {})
         self.guess = kwargs.get("guess", "").lower()
         self.score_ticker = self.run_manager.round_score - self.result.get("score", 0)
+        self.auto_continue_timer = 0.0
         
         self.buttons.clear()
         
@@ -71,16 +73,6 @@ class ScoringState(State):
             self.target_mult = 1.0
             self.target_x_mults = []
             config.sounds.play("error")
-            self.buttons.append(Button(
-                x=config.SCREEN_WIDTH // 2 - 80,
-                y=410,
-                width=160,
-                height=40,
-                text="Continue",
-                callback=self.press_continue,
-                color=(231, 76, 60),
-                font_size=20
-            ))
             return
             
         self.anim_stage = "init"
@@ -115,7 +107,6 @@ class ScoringState(State):
         self.target_mult = self.result["mult"]
         self.target_x_mults = list(self.result["x_mults"])
         
-        self.buttons.clear()
         config.sounds.play("stamp")
         
         # Spawn float directly on the paper
@@ -141,7 +132,7 @@ class ScoringState(State):
             btn.check_hover(mpos)
             
         for event in events:
-            # Skip animation on click
+            # Skip animation or advance on left click
             if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
                 if self.anim_stage != "done":
                     # Instant complete
@@ -150,20 +141,20 @@ class ScoringState(State):
                     self.displayed_x_mults = list(self.target_x_mults)
                     self.anim_stage = "done"
                     config.sounds.play("bell")
-                    self.buttons.append(Button(
-                        x=config.SCREEN_WIDTH // 2 - 80,
-                        y=410,
-                        width=160,
-                        height=40,
-                        text="Continue",
-                        callback=self.press_continue,
-                        color=(52, 152, 219),
-                        font_size=20
-                    ))
                 else:
-                    for btn in self.buttons:
-                        if btn.handle_event(event, mpos):
-                            break
+                    self.press_continue()
+            # Skip animation or advance on Return/Space press
+            elif event.type == pygame.KEYDOWN:
+                if event.key in [pygame.K_RETURN, pygame.K_SPACE]:
+                    if self.anim_stage != "done":
+                        # Instant complete
+                        self.displayed_chips = self.target_chips
+                        self.displayed_mult = self.target_mult
+                        self.displayed_x_mults = list(self.target_x_mults)
+                        self.anim_stage = "done"
+                        config.sounds.play("bell")
+                    else:
+                        self.press_continue()
 
     def press_continue(self):
         self.state_machine.change_state("game")
@@ -189,6 +180,10 @@ class ScoringState(State):
                 diff = target_score - self.score_ticker
                 speed = max(1, int(diff * 8.0 * dt))
                 self.score_ticker = min(target_score, self.score_ticker + speed)
+            else:
+                self.auto_continue_timer += dt
+                if self.auto_continue_timer >= 1.0:
+                    self.press_continue()
                 
         # Animation sequence
         self.timer += dt
@@ -280,16 +275,6 @@ class ScoringState(State):
                 self.spawn_float(f"+{self.result['score']:,} Hype!", config.SCREEN_WIDTH // 2, 320, config.COLOR_ROYALTIES)
                 
                 self.anim_stage = "done"
-                self.buttons.append(Button(
-                    x=config.SCREEN_WIDTH // 2 - 80,
-                    y=410,
-                    width=160,
-                    height=40,
-                    text="Continue",
-                    callback=self.press_continue,
-                    color=(52, 152, 219),
-                    font_size=20
-                ))
 
     def draw(self, surface):
         # Draw base desk background
