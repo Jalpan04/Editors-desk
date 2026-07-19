@@ -473,7 +473,8 @@ class ScoringState(State):
             box_rect = pygame.Rect(start_x + l_idx * (box_w + box_gap), row_y, box_w, box_w)
             
             # Determine color reveal state
-            if l_idx < self.letter_idx:
+            is_colored = (l_idx <= self.letter_idx and self.anim_stage != "init")
+            if is_colored:
                 clue = clues[l_idx]
                 if clue == "green":
                     col = config.COLOR_CLUE_GREEN
@@ -489,9 +490,9 @@ class ScoringState(State):
                 col = config.COLOR_CLUE_EMPTY
                 
             pygame.draw.rect(surface, col, box_rect, border_radius=4)
-            pygame.draw.rect(surface, config.COLOR_TEXT_DARK, box_rect, width=1 if l_idx >= self.letter_idx else 0, border_radius=4)
+            pygame.draw.rect(surface, config.COLOR_TEXT_DARK, box_rect, width=0 if is_colored else 1, border_radius=4)
             
-            let_color = config.COLOR_TEXT_LIGHT if col != config.COLOR_CLUE_EMPTY else config.COLOR_TEXT_DARK
+            let_color = config.COLOR_TEXT_LIGHT if is_colored else config.COLOR_TEXT_DARK
             let_surf = self.typewriter_font.render(char.upper(), True, let_color)
             let_rect = let_surf.get_rect(center=box_rect.center)
             surface.blit(let_surf, let_rect)
