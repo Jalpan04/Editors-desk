@@ -261,7 +261,8 @@ class ScoringState(State):
                             
                         # Float from the letter directly down to the placard
                         if added_chips > 0:
-                            self.spawn_float(f"+{added_chips} Chips", letter_center_x, letter_center_y, config.COLOR_CLUE_GREEN)
+                            float_color = config.COLOR_CLUE_YELLOW if clue == 'yellow' else config.COLOR_CLUE_GREEN
+                            self.spawn_float(f"+{added_chips} Chips", letter_center_x, letter_center_y, float_color)
                         if added_mult > 0:
                             self.spawn_float(f"+{added_mult} Mult", letter_center_x, letter_center_y, config.COLOR_CLUE_YELLOW)
                         if added_x > 1.0:
