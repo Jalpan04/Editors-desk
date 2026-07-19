@@ -460,24 +460,24 @@ class ScoringState(State):
         for l_idx, char in enumerate(self.guess):
             box_rect = pygame.Rect(start_x + l_idx * (box_w + box_gap), row_y, box_w, box_w)
             
-            # Determine color reveal state
-            if l_idx < self.letter_idx:
-                clue = clues[l_idx]
-                if clue == "green":
-                    col = config.COLOR_CLUE_GREEN
-                elif clue == "yellow":
-                    col = config.COLOR_CLUE_YELLOW
-                elif clue == "grey":
-                    col = config.COLOR_CLUE_GREY
-                elif clue == "redacted":
-                    col = config.COLOR_CLUE_REDACTED
-                else:
-                    col = config.COLOR_CLUE_EMPTY
+            # Determine color reveal state (always colored from the start)
+            clue = clues[l_idx]
+            if clue == "green":
+                col = config.COLOR_CLUE_GREEN
+            elif clue == "yellow":
+                col = config.COLOR_CLUE_YELLOW
+            elif clue == "grey":
+                col = config.COLOR_CLUE_GREY
+            elif clue == "redacted":
+                col = config.COLOR_CLUE_REDACTED
             else:
                 col = config.COLOR_CLUE_EMPTY
                 
             pygame.draw.rect(surface, col, box_rect, border_radius=4)
-            pygame.draw.rect(surface, config.COLOR_TEXT_DARK, box_rect, width=1 if l_idx >= self.letter_idx else 0, border_radius=4)
+            
+            # Highlight border for the active letter currently being calculated for points
+            if l_idx == self.letter_idx and self.anim_stage == "letters":
+                pygame.draw.rect(surface, config.COLOR_HIGHLIGHTER, box_rect, width=2, border_radius=4)
             
             let_color = config.COLOR_TEXT_LIGHT if col != config.COLOR_CLUE_EMPTY else config.COLOR_TEXT_DARK
             let_surf = self.typewriter_font.render(char.upper(), True, let_color)
