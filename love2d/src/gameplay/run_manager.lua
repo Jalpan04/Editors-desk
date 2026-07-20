@@ -31,6 +31,13 @@ function RunManager.new(data_dir)
             correction_tape = false
         }
     end
+    self.keyboard_mods[";"] = {
+        highlighter = false,
+        coffee_ring = false,
+        stapler = false,
+        removed = false,
+        correction_tape = false
+    }
     self.stapled_pairs = {}
     
     self.style_guides = {
@@ -45,6 +52,7 @@ function RunManager.new(data_dir)
     for c = 97, 122 do
         self.key_discoveries[string.char(c)] = "empty"
     end
+    self.key_discoveries[";"] = "empty"
     
     -- Current Round State
     self.round_score = 0
@@ -121,6 +129,7 @@ function RunManager:start_round()
     for c = 97, 122 do
         self.key_discoveries[string.char(c)] = "empty"
     end
+    self.key_discoveries[";"] = "empty"
     
     self.submissions_max = 4
     local has_red_pen = false
