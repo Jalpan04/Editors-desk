@@ -420,7 +420,7 @@ function ScoringState:draw_desk_elements()
     -- Draw historical entries up to index-1
     local row_y = 100
     local hist_len = #self.run_manager.round_history
-    local start_hist = math.max(1, hist_len - 4)
+    local start_hist = math.max(1, hist_len - 3)
     for idx = start_hist, hist_len - 1 do
         local entry = self.run_manager.round_history[idx]
         local word = entry.word
@@ -510,7 +510,7 @@ function ScoringState:draw_desk_elements()
     love.graphics.setFont(self.ui_bold)
     love.graphics.setColor(config.COLOR_CLUE_YELLOW[1], config.COLOR_CLUE_YELLOW[2], config.COLOR_CLUE_YELLOW[3], 1.0)
     local pat_w = self.ui_bold:getWidth(pattern_str:upper())
-    love.graphics.print(pattern_str:upper(), px + pw/2 - pat_w/2, placard_y - 20)
+    love.graphics.print(pattern_str:upper(), px + pw/2 - pat_w/2, placard_y - 32)
     
     love.graphics.setColor(18/255, 19/255, 24/255, 1.0)
     love.graphics.rectangle("fill", placard_x, placard_y, placard_w, placard_h, 8, 8)

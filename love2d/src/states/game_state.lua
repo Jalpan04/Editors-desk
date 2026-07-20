@@ -418,7 +418,7 @@ function GameState:draw_gameplay()
     -- Rows history
     local row_y = 100
     local hist_len = #self.run_manager.round_history
-    local start_hist = math.max(1, hist_len - 4)
+    local start_hist = math.max(1, hist_len - 3)
     for idx = start_hist, hist_len do
         local entry = self.run_manager.round_history[idx]
         local word = entry.word
