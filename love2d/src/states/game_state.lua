@@ -41,13 +41,13 @@ end
 function GameState:setup_buttons()
     self.buttons = {}
     table.insert(self.buttons, ui.Button.new(
-        880, 515, 160, 45,
+        440, 642, 160, 45,
         "Draft Word",
         function() self:press_draft() end,
         {230/255, 180/255, 30/255}
     ))
     table.insert(self.buttons, ui.Button.new(
-        880, 575, 160, 45,
+        643, 642, 160, 45,
         "Submit Word",
         function() self:press_submit() end,
         {46/255, 180/255, 110/255}
