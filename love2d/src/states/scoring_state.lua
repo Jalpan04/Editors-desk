@@ -572,22 +572,22 @@ function ScoringState:draw_desk_elements()
     
     -- Resources (Submissions / Drafts Counter Box - Right Panel)
     love.graphics.setColor(config.COLOR_PANEL[1], config.COLOR_PANEL[2], config.COLOR_PANEL[3], 1.0)
-    love.graphics.rectangle("fill", 960, 80, 150, 75, 10, 10)
+    love.graphics.rectangle("fill", 945, 80, 185, 75, 10, 10)
     love.graphics.setColor(config.COLOR_TEXT_MUTED[1], config.COLOR_TEXT_MUTED[2], config.COLOR_TEXT_MUTED[3], 1.0)
     love.graphics.setLineWidth(2)
-    love.graphics.rectangle("line", 960, 80, 150, 75, 10, 10)
+    love.graphics.rectangle("line", 945, 80, 185, 75, 10, 10)
     
     love.graphics.setFont(self.ui_font)
     love.graphics.setColor(config.COLOR_TEXT_LIGHT[1], config.COLOR_TEXT_LIGHT[2], config.COLOR_TEXT_LIGHT[3], 1.0)
-    love.graphics.print("Submissions: " .. self.run_manager.submissions_left .. "/" .. self.run_manager.submissions_max, 975, 95)
+    love.graphics.print("Submissions: " .. self.run_manager.submissions_left .. "/" .. self.run_manager.submissions_max, 960, 95)
     love.graphics.setColor(config.COLOR_CLUE_YELLOW[1], config.COLOR_CLUE_YELLOW[2], config.COLOR_CLUE_YELLOW[3], 1.0)
-    love.graphics.print("Drafts: " .. self.run_manager.drafts_left .. "/" .. self.run_manager.drafts_max, 975, 122)
+    love.graphics.print("Drafts: " .. self.run_manager.drafts_left .. "/" .. self.run_manager.drafts_max, 960, 122)
     
     -- Snacks (Right side - below Resources)
     love.graphics.setFont(self.ui_bold)
     love.graphics.setColor(config.COLOR_TEXT_LIGHT[1], config.COLOR_TEXT_LIGHT[2], config.COLOR_TEXT_LIGHT[3], 1.0)
     local snk_w = self.ui_bold:getWidth("SNACKS")
-    love.graphics.print("SNACKS", 960 + (150 - snk_w) / 2, 180)
+    love.graphics.print("SNACKS", 945 + (185 - snk_w) / 2, 180)
     
     for idx = 1, 2 do
         local ex = 970
