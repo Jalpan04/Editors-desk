@@ -188,7 +188,7 @@ function GameState:click_edit_slot(mx, my)
     local clicked_idx = -1
     for idx = 1, 2 do
         local ex = 970
-        local ey = 412 + (idx - 1) * 65
+        local ey = 205 + (idx - 1) * 65
         if mx >= ex and mx <= ex + 130 and my >= ey and my <= ey + 55 then
             clicked_idx = idx
             break
@@ -208,7 +208,7 @@ function GameState:click_edit_slot(mx, my)
             if #target_tropes > 0 then
                 local msg = edit_item:use(self.run_manager, {target_trope = target_tropes[1]})
                 table.remove(self.run_manager.edits, clicked_idx)
-                self.particles:spawn(1035, 412 + (clicked_idx - 1) * 65 + 27, config.COLOR_HIGHLIGHTER, 15)
+                self.particles:spawn(1035, 205 + (clicked_idx - 1) * 65 + 27, config.COLOR_HIGHLIGHTER, 15)
                 self:trigger_error(msg)
             else
                 self:trigger_error("No Tropes have active debuffs!")
@@ -216,7 +216,7 @@ function GameState:click_edit_slot(mx, my)
         else
             local msg = edit_item:use(self.run_manager)
             table.remove(self.run_manager.edits, clicked_idx)
-            self.particles:spawn(1035, 412 + (clicked_idx - 1) * 65 + 27, config.COLOR_ROYALTIES, 15)
+            self.particles:spawn(1035, 205 + (clicked_idx - 1) * 65 + 27, config.COLOR_ROYALTIES, 15)
             self:trigger_error(msg)
         end
     end
@@ -227,7 +227,7 @@ function GameState:check_tooltips(mx, my)
     
     for idx, trope in ipairs(self.run_manager.tropes) do
         local tx = 40 + (idx - 1) * 68
-        local ty = 412
+        local ty = 340
         if mx >= tx and mx <= tx + 60 and my >= ty and my <= ty + 60 then
             local debuff_text = trope.is_debuff_active and ("Debuff: " .. trope.debuff_desc) or "Debuff: Cleaned (White-Out)"
             self.hovered_tooltip = {
@@ -242,7 +242,7 @@ function GameState:check_tooltips(mx, my)
     
     for idx, edit in ipairs(self.run_manager.edits) do
         local ex = 970
-        local ey = 412 + (idx - 1) * 65
+        local ey = 205 + (idx - 1) * 65
         if mx >= ex and mx <= ex + 130 and my >= ey and my <= ey + 55 then
             self.hovered_tooltip = {
                 title = edit.name,
@@ -336,23 +336,14 @@ function GameState:draw_gameplay()
     love.graphics.setColor(stage_color[1], stage_color[2], stage_color[3], 1.0)
     love.graphics.print(stage_name, 60, 238)
     
-    -- Resources (Submissions / Drafts)
-    love.graphics.setColor(config.COLOR_PANEL[1], config.COLOR_PANEL[2], config.COLOR_PANEL[3], 1.0)
-    love.graphics.rectangle("fill", 40, 302, 310, 70, 10, 10)
-    love.graphics.setFont(self.ui_font)
-    love.graphics.setColor(config.COLOR_TEXT_LIGHT[1], config.COLOR_TEXT_LIGHT[2], config.COLOR_TEXT_LIGHT[3], 1.0)
-    love.graphics.print("Submissions: " .. self.run_manager.submissions_left .. "/" .. self.run_manager.submissions_max, 60, 314)
-    love.graphics.setColor(config.COLOR_CLUE_YELLOW[1], config.COLOR_CLUE_YELLOW[2], config.COLOR_CLUE_YELLOW[3], 1.0)
-    love.graphics.print("Drafts: " .. self.run_manager.drafts_left .. "/" .. self.run_manager.drafts_max, 60, 342)
-    
     -- Stationery Header & Slots
     love.graphics.setFont(self.ui_bold)
     love.graphics.setColor(config.COLOR_TEXT_LIGHT[1], config.COLOR_TEXT_LIGHT[2], config.COLOR_TEXT_LIGHT[3], 1.0)
-    love.graphics.print("STATIONERY", 40, 388)
+    love.graphics.print("STATIONERY", 40, 315)
     
     for idx = 1, 5 do
         local tx = 40 + (idx - 1) * 68
-        local ty = 412
+        local ty = 340
         love.graphics.setColor(20/255, 22/255, 30/255, 1.0)
         love.graphics.rectangle("fill", tx, ty, 60, 60, 6, 6)
         love.graphics.setColor(config.COLOR_TEXT_MUTED[1], config.COLOR_TEXT_MUTED[2], config.COLOR_TEXT_MUTED[3], 1.0)
@@ -588,15 +579,28 @@ function GameState:draw_gameplay()
         love.graphics.print(self.error_message, bx + (bw - ew) / 2, by + (bh - eh) / 2)
     end
     
-    -- Snacks (Right side - mirrored with Stationery at y = 388)
+    -- Resources (Submissions / Drafts Counter Box - Right Panel)
+    love.graphics.setColor(config.COLOR_PANEL[1], config.COLOR_PANEL[2], config.COLOR_PANEL[3], 1.0)
+    love.graphics.rectangle("fill", 960, 80, 150, 75, 10, 10)
+    love.graphics.setColor(config.COLOR_TEXT_MUTED[1], config.COLOR_TEXT_MUTED[2], config.COLOR_TEXT_MUTED[3], 1.0)
+    love.graphics.setLineWidth(2)
+    love.graphics.rectangle("line", 960, 80, 150, 75, 10, 10)
+    
+    love.graphics.setFont(self.ui_font)
+    love.graphics.setColor(config.COLOR_TEXT_LIGHT[1], config.COLOR_TEXT_LIGHT[2], config.COLOR_TEXT_LIGHT[3], 1.0)
+    love.graphics.print("Submissions: " .. self.run_manager.submissions_left .. "/" .. self.run_manager.submissions_max, 975, 95)
+    love.graphics.setColor(config.COLOR_CLUE_YELLOW[1], config.COLOR_CLUE_YELLOW[2], config.COLOR_CLUE_YELLOW[3], 1.0)
+    love.graphics.print("Drafts: " .. self.run_manager.drafts_left .. "/" .. self.run_manager.drafts_max, 975, 122)
+    
+    -- Snacks (Right side - below Resources)
     love.graphics.setFont(self.ui_bold)
     love.graphics.setColor(config.COLOR_TEXT_LIGHT[1], config.COLOR_TEXT_LIGHT[2], config.COLOR_TEXT_LIGHT[3], 1.0)
     local snk_w = self.ui_bold:getWidth("SNACKS")
-    love.graphics.print("SNACKS", 970 + (130 - snk_w) / 2, 388)
+    love.graphics.print("SNACKS", 960 + (150 - snk_w) / 2, 180)
     
     for idx = 1, 2 do
         local ex = 970
-        local ey = 412 + (idx - 1) * 65
+        local ey = 205 + (idx - 1) * 65
         love.graphics.setColor(20/255, 22/255, 30/255, 1.0)
         love.graphics.rectangle("fill", ex, ey, 130, 55, 6, 6)
         love.graphics.setColor(config.COLOR_TEXT_MUTED[1], config.COLOR_TEXT_MUTED[2], config.COLOR_TEXT_MUTED[3], 1.0)

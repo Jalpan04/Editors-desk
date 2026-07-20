@@ -341,25 +341,16 @@ function ScoringState:draw_desk_elements()
     love.graphics.setColor(stage_color[1], stage_color[2], stage_color[3], 1.0)
     love.graphics.print(stage_name, 60, 238)
     
-    -- Resources
-    love.graphics.setColor(config.COLOR_PANEL[1], config.COLOR_PANEL[2], config.COLOR_PANEL[3], 1.0)
-    love.graphics.rectangle("fill", 40, 302, 310, 70, 10, 10)
-    love.graphics.setFont(self.ui_font)
-    love.graphics.setColor(config.COLOR_TEXT_LIGHT[1], config.COLOR_TEXT_LIGHT[2], config.COLOR_TEXT_LIGHT[3], 1.0)
-    love.graphics.print("Submissions: " .. self.run_manager.submissions_left .. "/" .. self.run_manager.submissions_max, 60, 314)
-    love.graphics.setColor(config.COLOR_CLUE_YELLOW[1], config.COLOR_CLUE_YELLOW[2], config.COLOR_CLUE_YELLOW[3], 1.0)
-    love.graphics.print("Drafts: " .. self.run_manager.drafts_left .. "/" .. self.run_manager.drafts_max, 60, 342)
-    
-    -- Stationery
+    -- Stationery Header & Slots
     love.graphics.setFont(self.ui_bold)
     love.graphics.setColor(config.COLOR_TEXT_LIGHT[1], config.COLOR_TEXT_LIGHT[2], config.COLOR_TEXT_LIGHT[3], 1.0)
-    love.graphics.print("STATIONERY", 40, 388)
+    love.graphics.print("STATIONERY", 40, 315)
     for idx = 1, 5 do
         local tx = 40 + (idx - 1) * 68
         love.graphics.setColor(20/255, 22/255, 30/255, 1.0)
-        love.graphics.rectangle("fill", tx, 412, 60, 60, 6, 6)
+        love.graphics.rectangle("fill", tx, 340, 60, 60, 6, 6)
         love.graphics.setColor(config.COLOR_TEXT_MUTED[1], config.COLOR_TEXT_MUTED[2], config.COLOR_TEXT_MUTED[3], 1.0)
-        love.graphics.rectangle("line", tx, 412, 60, 60, 6, 6)
+        love.graphics.rectangle("line", tx, 340, 60, 60, 6, 6)
         
         if idx <= #self.run_manager.tropes then
             local trope = self.run_manager.tropes[idx]
@@ -374,7 +365,7 @@ function ScoringState:draw_desk_elements()
             love.graphics.setColor(txt_color[1], txt_color[2], txt_color[3], 1.0)
             local iw = self.typewriter_font:getWidth(initials)
             local ih = self.typewriter_font:getHeight()
-            love.graphics.print(initials, tx + (60 - iw) / 2, 412 + (60 - ih) / 2)
+            love.graphics.print(initials, tx + (60 - iw) / 2, 340 + (60 - ih) / 2)
         end
     end
     
@@ -579,15 +570,28 @@ function ScoringState:draw_desk_elements()
         end
     end
     
-    -- Snacks (Right side - mirrored with Stationery at y = 388)
+    -- Resources (Submissions / Drafts Counter Box - Right Panel)
+    love.graphics.setColor(config.COLOR_PANEL[1], config.COLOR_PANEL[2], config.COLOR_PANEL[3], 1.0)
+    love.graphics.rectangle("fill", 960, 80, 150, 75, 10, 10)
+    love.graphics.setColor(config.COLOR_TEXT_MUTED[1], config.COLOR_TEXT_MUTED[2], config.COLOR_TEXT_MUTED[3], 1.0)
+    love.graphics.setLineWidth(2)
+    love.graphics.rectangle("line", 960, 80, 150, 75, 10, 10)
+    
+    love.graphics.setFont(self.ui_font)
+    love.graphics.setColor(config.COLOR_TEXT_LIGHT[1], config.COLOR_TEXT_LIGHT[2], config.COLOR_TEXT_LIGHT[3], 1.0)
+    love.graphics.print("Submissions: " .. self.run_manager.submissions_left .. "/" .. self.run_manager.submissions_max, 975, 95)
+    love.graphics.setColor(config.COLOR_CLUE_YELLOW[1], config.COLOR_CLUE_YELLOW[2], config.COLOR_CLUE_YELLOW[3], 1.0)
+    love.graphics.print("Drafts: " .. self.run_manager.drafts_left .. "/" .. self.run_manager.drafts_max, 975, 122)
+    
+    -- Snacks (Right side - below Resources)
     love.graphics.setFont(self.ui_bold)
     love.graphics.setColor(config.COLOR_TEXT_LIGHT[1], config.COLOR_TEXT_LIGHT[2], config.COLOR_TEXT_LIGHT[3], 1.0)
     local snk_w = self.ui_bold:getWidth("SNACKS")
-    love.graphics.print("SNACKS", 970 + (130 - snk_w) / 2, 388)
+    love.graphics.print("SNACKS", 960 + (150 - snk_w) / 2, 180)
     
     for idx = 1, 2 do
         local ex = 970
-        local ey = 412 + (idx - 1) * 65
+        local ey = 205 + (idx - 1) * 65
         love.graphics.setColor(20/255, 22/255, 30/255, 1.0)
         love.graphics.rectangle("fill", ex, ey, 130, 55, 6, 6)
         love.graphics.setColor(config.COLOR_TEXT_MUTED[1], config.COLOR_TEXT_MUTED[2], config.COLOR_TEXT_MUTED[3], 1.0)
