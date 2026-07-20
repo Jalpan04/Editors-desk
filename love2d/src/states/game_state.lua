@@ -41,13 +41,13 @@ end
 function GameState:setup_buttons()
     self.buttons = {}
     table.insert(self.buttons, ui.Button.new(
-        440, 642, 160, 45,
+        495, 630, 150, 42,
         "Draft Word",
         function() self:press_draft() end,
         {230/255, 180/255, 30/255}
     ))
     table.insert(self.buttons, ui.Button.new(
-        643, 642, 160, 45,
+        665, 630, 150, 42,
         "Submit Word",
         function() self:press_submit() end,
         {46/255, 180/255, 110/255}
@@ -187,9 +187,9 @@ end
 function GameState:click_edit_slot(mx, my)
     local clicked_idx = -1
     for idx = 1, 2 do
-        local ex = 895
-        local ey = 175 + (idx - 1) * 70
-        if mx >= ex and mx <= ex + 130 and my >= ey and my <= ey + 60 then
+        local ex = 970
+        local ey = 412 + (idx - 1) * 65
+        if mx >= ex and mx <= ex + 130 and my >= ey and my <= ey + 55 then
             clicked_idx = idx
             break
         end
@@ -208,7 +208,7 @@ function GameState:click_edit_slot(mx, my)
             if #target_tropes > 0 then
                 local msg = edit_item:use(self.run_manager, {target_trope = target_tropes[1]})
                 table.remove(self.run_manager.edits, clicked_idx)
-                self.particles:spawn(960, 175 + (clicked_idx - 1) * 70 + 30, config.COLOR_HIGHLIGHTER, 15)
+                self.particles:spawn(1035, 412 + (clicked_idx - 1) * 65 + 27, config.COLOR_HIGHLIGHTER, 15)
                 self:trigger_error(msg)
             else
                 self:trigger_error("No Tropes have active debuffs!")
@@ -216,7 +216,7 @@ function GameState:click_edit_slot(mx, my)
         else
             local msg = edit_item:use(self.run_manager)
             table.remove(self.run_manager.edits, clicked_idx)
-            self.particles:spawn(960, 175 + (clicked_idx - 1) * 70 + 30, config.COLOR_ROYALTIES, 15)
+            self.particles:spawn(1035, 412 + (clicked_idx - 1) * 65 + 27, config.COLOR_ROYALTIES, 15)
             self:trigger_error(msg)
         end
     end
@@ -227,7 +227,7 @@ function GameState:check_tooltips(mx, my)
     
     for idx, trope in ipairs(self.run_manager.tropes) do
         local tx = 40 + (idx - 1) * 68
-        local ty = 435
+        local ty = 412
         if mx >= tx and mx <= tx + 60 and my >= ty and my <= ty + 60 then
             local debuff_text = trope.is_debuff_active and ("Debuff: " .. trope.debuff_desc) or "Debuff: Cleaned (White-Out)"
             self.hovered_tooltip = {
@@ -241,9 +241,9 @@ function GameState:check_tooltips(mx, my)
     end
     
     for idx, edit in ipairs(self.run_manager.edits) do
-        local ex = 895
-        local ey = 175 + (idx - 1) * 70
-        if mx >= ex and mx <= ex + 130 and my >= ey and my <= ey + 60 then
+        local ex = 970
+        local ey = 412 + (idx - 1) * 65
+        if mx >= ex and mx <= ex + 130 and my >= ey and my <= ey + 55 then
             self.hovered_tooltip = {
                 title = edit.name,
                 desc = edit.description,
@@ -303,56 +303,56 @@ end
 function GameState:draw_gameplay()
     -- 1. Left Panel - Hype Meter & Inventory
     love.graphics.setColor(config.COLOR_PANEL[1], config.COLOR_PANEL[2], config.COLOR_PANEL[3], 1.0)
-    love.graphics.rectangle("fill", 40, 80, 310, 220, 10, 10)
+    love.graphics.rectangle("fill", 40, 80, 310, 210, 10, 10)
     love.graphics.setColor(config.COLOR_TEXT_MUTED[1], config.COLOR_TEXT_MUTED[2], config.COLOR_TEXT_MUTED[3], 1.0)
     love.graphics.setLineWidth(2)
-    love.graphics.rectangle("line", 40, 80, 310, 220, 10, 10)
+    love.graphics.rectangle("line", 40, 80, 310, 210, 10, 10)
     
     love.graphics.setFont(self.ui_font)
     love.graphics.setColor(config.COLOR_TEXT_MUTED[1], config.COLOR_TEXT_MUTED[2], config.COLOR_TEXT_MUTED[3], 1.0)
-    love.graphics.print("CURRENT HYPE SCORE", 60, 100)
+    love.graphics.print("CURRENT HYPE SCORE", 60, 95)
     
     local score_str = tostring(self.run_manager.round_score):reverse():gsub("(%d%d%d)", "%1,"):reverse():gsub("^,", "")
     love.graphics.setFont(self.score_font)
     love.graphics.setColor(config.COLOR_TEXT_LIGHT[1], config.COLOR_TEXT_LIGHT[2], config.COLOR_TEXT_LIGHT[3], 1.0)
-    love.graphics.print(score_str, 60, 125)
+    love.graphics.print(score_str, 60, 118)
     
     love.graphics.setFont(self.ui_font)
     local target_formatted = tostring(self.run_manager.target_score):reverse():gsub("(%d%d%d)", "%1,"):reverse():gsub("^,", "")
-    love.graphics.print("Target: " .. target_formatted, 60, 175)
+    love.graphics.print("Target: " .. target_formatted, 60, 168)
     
     -- Progress Bar
     local pct = math.min(1.0, self.run_manager.round_score / math.max(1, self.run_manager.target_score))
     love.graphics.setColor(20/255, 20/255, 25/255, 1.0)
-    love.graphics.rectangle("fill", 60, 210, 270, 20, 4, 4)
+    love.graphics.rectangle("fill", 60, 198, 270, 18, 4, 4)
     if pct > 0 then
         love.graphics.setColor(config.COLOR_CLUE_GREEN[1], config.COLOR_CLUE_GREEN[2], config.COLOR_CLUE_GREEN[3], 1.0)
-        love.graphics.rectangle("fill", 60, 210, math.floor(270 * pct), 20, 4, 4)
+        love.graphics.rectangle("fill", 60, 198, math.floor(270 * pct), 18, 4, 4)
     end
     
     local stage_name = self.run_manager:get_assignment_name()
     local stage_color = self.run_manager.boss_assignment and config.COLOR_ACCENT or config.COLOR_TEXT_LIGHT
     love.graphics.setFont(self.ui_bold)
     love.graphics.setColor(stage_color[1], stage_color[2], stage_color[3], 1.0)
-    love.graphics.print(stage_name, 60, 250)
+    love.graphics.print(stage_name, 60, 238)
     
-    -- Resources
+    -- Resources (Submissions / Drafts)
     love.graphics.setColor(config.COLOR_PANEL[1], config.COLOR_PANEL[2], config.COLOR_PANEL[3], 1.0)
-    love.graphics.rectangle("fill", 40, 315, 310, 80, 10, 10)
+    love.graphics.rectangle("fill", 40, 302, 310, 70, 10, 10)
     love.graphics.setFont(self.ui_font)
     love.graphics.setColor(config.COLOR_TEXT_LIGHT[1], config.COLOR_TEXT_LIGHT[2], config.COLOR_TEXT_LIGHT[3], 1.0)
-    love.graphics.print("Submissions: " .. self.run_manager.submissions_left .. "/" .. self.run_manager.submissions_max, 60, 330)
+    love.graphics.print("Submissions: " .. self.run_manager.submissions_left .. "/" .. self.run_manager.submissions_max, 60, 314)
     love.graphics.setColor(config.COLOR_CLUE_YELLOW[1], config.COLOR_CLUE_YELLOW[2], config.COLOR_CLUE_YELLOW[3], 1.0)
-    love.graphics.print("Drafts: " .. self.run_manager.drafts_left .. "/" .. self.run_manager.drafts_max, 60, 360)
+    love.graphics.print("Drafts: " .. self.run_manager.drafts_left .. "/" .. self.run_manager.drafts_max, 60, 342)
     
-    -- Stationery
+    -- Stationery Header & Slots
     love.graphics.setFont(self.ui_bold)
     love.graphics.setColor(config.COLOR_TEXT_LIGHT[1], config.COLOR_TEXT_LIGHT[2], config.COLOR_TEXT_LIGHT[3], 1.0)
-    love.graphics.print("STATIONERY", 40, 408)
+    love.graphics.print("STATIONERY", 40, 388)
     
     for idx = 1, 5 do
         local tx = 40 + (idx - 1) * 68
-        local ty = 435
+        local ty = 412
         love.graphics.setColor(20/255, 22/255, 30/255, 1.0)
         love.graphics.rectangle("fill", tx, ty, 60, 60, 6, 6)
         love.graphics.setColor(config.COLOR_TEXT_MUTED[1], config.COLOR_TEXT_MUTED[2], config.COLOR_TEXT_MUTED[3], 1.0)
@@ -379,14 +379,14 @@ function GameState:draw_gameplay()
     end
     
     -- 2. Center Panel - Manuscript Paper
-    local px, py, pw, ph = 400, 80, 440, 360
+    local px, py, pw, ph = 435, 80, 440, 360
     love.graphics.setColor(20/255, 20/255, 25/255, 1.0)
     love.graphics.rectangle("fill", px - 6, py - 6, pw + 12, ph + 12, 8, 8)
     love.graphics.setColor(config.COLOR_PAPER[1], config.COLOR_PAPER[2], config.COLOR_PAPER[3], 1.0)
     love.graphics.rectangle("fill", px, py, pw, ph, 6, 6)
     
     -- Rows history
-    local row_y = 100
+    local row_y = 112
     local hist_len = #self.run_manager.round_history
     local start_hist = math.max(1, hist_len - 3)
     for idx = start_hist, hist_len do
@@ -447,7 +447,7 @@ function GameState:draw_gameplay()
         row_y = row_y + 50
     end
     
-    -- Active Input Boxes (dynamically aligned on the next line of the manuscript paper)
+    -- Active Input Boxes
     local input_len = (self.run_manager.boss_assignment == "Minimalist") and 4 or 5
     local box_w = 40
     local box_gap = 8
@@ -487,17 +487,17 @@ function GameState:draw_gameplay()
     end
     
     -- 3. Draw Typewriter Keyboard at bottom
-    local kbd_x = 400
+    local kbd_x = 423
     local kbd_y = 480
-    local key_size = 45
-    local key_gap = 8
+    local key_size = 42
+    local key_gap = 5
     
     for r_idx, row in ipairs(self.kbd_rows) do
         local offset = 0
         if r_idx == 2 then
-            offset = 20
+            offset = 22
         elseif r_idx == 3 then
-            offset = 40
+            offset = 52
         end
         
         for k_idx, char in ipairs(row) do
@@ -519,14 +519,17 @@ function GameState:draw_gameplay()
             else
                 if clue_state == "green" then
                     bg_color = config.COLOR_CLUE_GREEN
+                    border_color = config.COLOR_CLUE_GREEN
                 elseif clue_state == "yellow" then
                     bg_color = config.COLOR_CLUE_YELLOW
+                    border_color = config.COLOR_CLUE_YELLOW
                 elseif clue_state == "grey" then
                     bg_color = config.COLOR_CLUE_GREY
+                    border_color = config.COLOR_CLUE_GREY
                 else
                     bg_color = config.COLOR_PANEL
+                    border_color = config.COLOR_TEXT_MUTED
                 end
-                border_color = config.COLOR_TEXT_LIGHT
             end
             
             love.graphics.setColor(bg_color[1], bg_color[2], bg_color[3], 1.0)
@@ -534,7 +537,7 @@ function GameState:draw_gameplay()
             
             if is_highlighter and not is_removed then
                 love.graphics.setColor(config.COLOR_HIGHLIGHTER[1], config.COLOR_HIGHLIGHTER[2], config.COLOR_HIGHLIGHTER[3], 1.0)
-                love.graphics.setLineWidth(3)
+                love.graphics.setLineWidth(2)
                 love.graphics.rectangle("line", key_x, key_y, key_size, key_size, 5, 5)
             end
             if is_coffee_ring and not is_removed then
@@ -571,7 +574,7 @@ function GameState:draw_gameplay()
     
     -- Error / notice banner
     if self.error_timer > 0 and self.error_message ~= "" then
-        local bx, by, bw, bh = 400, 20, 440, 45
+        local bx, by, bw, bh = 435, 20, 440, 45
         love.graphics.setColor(30/255, 20/255, 20/255, 1.0)
         love.graphics.rectangle("fill", bx, by, bw, bh, 6, 6)
         love.graphics.setColor(config.COLOR_ACCENT[1], config.COLOR_ACCENT[2], config.COLOR_ACCENT[3], 1.0)
@@ -585,20 +588,20 @@ function GameState:draw_gameplay()
         love.graphics.print(self.error_message, bx + (bw - ew) / 2, by + (bh - eh) / 2)
     end
     
-    -- Snacks (Right side upper)
+    -- Snacks (Right side - mirrored with Stationery at y = 388)
     love.graphics.setFont(self.ui_bold)
     love.graphics.setColor(config.COLOR_TEXT_LIGHT[1], config.COLOR_TEXT_LIGHT[2], config.COLOR_TEXT_LIGHT[3], 1.0)
     local snk_w = self.ui_bold:getWidth("SNACKS")
-    love.graphics.print("SNACKS", 880 + (160 - snk_w) / 2, 145)
+    love.graphics.print("SNACKS", 970 + (130 - snk_w) / 2, 388)
     
     for idx = 1, 2 do
-        local ex = 895
-        local ey = 175 + (idx - 1) * 70
+        local ex = 970
+        local ey = 412 + (idx - 1) * 65
         love.graphics.setColor(20/255, 22/255, 30/255, 1.0)
-        love.graphics.rectangle("fill", ex, ey, 130, 60, 6, 6)
+        love.graphics.rectangle("fill", ex, ey, 130, 55, 6, 6)
         love.graphics.setColor(config.COLOR_TEXT_MUTED[1], config.COLOR_TEXT_MUTED[2], config.COLOR_TEXT_MUTED[3], 1.0)
         love.graphics.setLineWidth(1)
-        love.graphics.rectangle("line", ex, ey, 130, 60, 6, 6)
+        love.graphics.rectangle("line", ex, ey, 130, 55, 6, 6)
         
         if idx <= #self.run_manager.edits then
             local edit = self.run_manager.edits[idx]
@@ -606,16 +609,16 @@ function GameState:draw_gameplay()
             love.graphics.setFont(self.ui_font)
             love.graphics.setColor(config.COLOR_TEXT_LIGHT[1], config.COLOR_TEXT_LIGHT[2], config.COLOR_TEXT_LIGHT[3], 1.0)
             local nw = self.ui_font:getWidth(name_clean)
-            love.graphics.print(name_clean, ex + (130 - nw) / 2, ey + 10)
+            love.graphics.print(name_clean, ex + (130 - nw) / 2, ey + 8)
             
             love.graphics.setFont(self.tooltip_font)
             love.graphics.setColor(config.COLOR_TEXT_MUTED[1], config.COLOR_TEXT_MUTED[2], config.COLOR_TEXT_MUTED[3], 1.0)
             local uw = self.tooltip_font:getWidth("Click to use")
-            love.graphics.print("Click to use", ex + (130 - uw) / 2, ey + 35)
+            love.graphics.print("Click to use", ex + (130 - uw) / 2, ey + 32)
         end
     end
     
-    -- Buttons (Right side next to Keyboard)
+    -- Buttons (Grouped under Keyboard)
     for _, btn in ipairs(self.buttons) do
         btn:draw()
     end

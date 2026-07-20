@@ -339,27 +339,27 @@ function ScoringState:draw_desk_elements()
     local stage_color = self.run_manager.boss_assignment and config.COLOR_ACCENT or config.COLOR_TEXT_LIGHT
     love.graphics.setFont(self.ui_bold)
     love.graphics.setColor(stage_color[1], stage_color[2], stage_color[3], 1.0)
-    love.graphics.print(stage_name, 60, 250)
+    love.graphics.print(stage_name, 60, 238)
     
     -- Resources
     love.graphics.setColor(config.COLOR_PANEL[1], config.COLOR_PANEL[2], config.COLOR_PANEL[3], 1.0)
-    love.graphics.rectangle("fill", 40, 315, 310, 80, 10, 10)
+    love.graphics.rectangle("fill", 40, 302, 310, 70, 10, 10)
     love.graphics.setFont(self.ui_font)
     love.graphics.setColor(config.COLOR_TEXT_LIGHT[1], config.COLOR_TEXT_LIGHT[2], config.COLOR_TEXT_LIGHT[3], 1.0)
-    love.graphics.print("Submissions: " .. self.run_manager.submissions_left .. "/" .. self.run_manager.submissions_max, 60, 330)
+    love.graphics.print("Submissions: " .. self.run_manager.submissions_left .. "/" .. self.run_manager.submissions_max, 60, 314)
     love.graphics.setColor(config.COLOR_CLUE_YELLOW[1], config.COLOR_CLUE_YELLOW[2], config.COLOR_CLUE_YELLOW[3], 1.0)
-    love.graphics.print("Drafts: " .. self.run_manager.drafts_left .. "/" .. self.run_manager.drafts_max, 60, 360)
+    love.graphics.print("Drafts: " .. self.run_manager.drafts_left .. "/" .. self.run_manager.drafts_max, 60, 342)
     
     -- Stationery
     love.graphics.setFont(self.ui_bold)
     love.graphics.setColor(config.COLOR_TEXT_LIGHT[1], config.COLOR_TEXT_LIGHT[2], config.COLOR_TEXT_LIGHT[3], 1.0)
-    love.graphics.print("STATIONERY", 40, 408)
+    love.graphics.print("STATIONERY", 40, 388)
     for idx = 1, 5 do
         local tx = 40 + (idx - 1) * 68
         love.graphics.setColor(20/255, 22/255, 30/255, 1.0)
-        love.graphics.rectangle("fill", tx, 435, 60, 60, 6, 6)
+        love.graphics.rectangle("fill", tx, 412, 60, 60, 6, 6)
         love.graphics.setColor(config.COLOR_TEXT_MUTED[1], config.COLOR_TEXT_MUTED[2], config.COLOR_TEXT_MUTED[3], 1.0)
-        love.graphics.rectangle("line", tx, 435, 60, 60, 6, 6)
+        love.graphics.rectangle("line", tx, 412, 60, 60, 6, 6)
         
         if idx <= #self.run_manager.tropes then
             local trope = self.run_manager.tropes[idx]
@@ -374,12 +374,12 @@ function ScoringState:draw_desk_elements()
             love.graphics.setColor(txt_color[1], txt_color[2], txt_color[3], 1.0)
             local iw = self.typewriter_font:getWidth(initials)
             local ih = self.typewriter_font:getHeight()
-            love.graphics.print(initials, tx + (60 - iw) / 2, 435 + (60 - ih) / 2)
+            love.graphics.print(initials, tx + (60 - iw) / 2, 412 + (60 - ih) / 2)
         end
     end
     
     -- 2. Center Panel - Manuscript Paper
-    local px, py, pw, ph = 400, 80, 440, 360
+    local px, py, pw, ph = 435, 80, 440, 360
     love.graphics.setColor(20/255, 20/255, 25/255, 1.0)
     love.graphics.rectangle("fill", px - 6, py - 6, pw + 12, ph + 12, 8, 8)
     love.graphics.setColor(config.COLOR_PAPER[1], config.COLOR_PAPER[2], config.COLOR_PAPER[3], 1.0)
@@ -392,7 +392,7 @@ function ScoringState:draw_desk_elements()
     local start_x = px + (pw - total_w) / 2
     
     -- Draw historical entries up to index-1
-    local row_y = 100
+    local row_y = 112
     local hist_len = #self.run_manager.round_history
     local start_hist = math.max(1, hist_len - 3)
     for idx = start_hist, hist_len - 1 do
@@ -520,14 +520,14 @@ function ScoringState:draw_desk_elements()
     end
     
     -- 4. Keyboard (static)
-    local kbd_x = 400
+    local kbd_x = 423
     local kbd_y = 480
-    local key_size = 45
-    local key_gap = 8
+    local key_size = 42
+    local key_gap = 5
     for r_idx, row in ipairs(self.kbd_rows) do
         local offset = 0
-        if r_idx == 2 then offset = 20
-        elseif r_idx == 3 then offset = 40
+        if r_idx == 2 then offset = 22
+        elseif r_idx == 3 then offset = 52
         end
         for k_idx, char in ipairs(row) do
             local key_x = kbd_x + offset + (k_idx - 1) * (key_size + key_gap)
@@ -579,20 +579,20 @@ function ScoringState:draw_desk_elements()
         end
     end
     
-    -- Snacks (Right side)
+    -- Snacks (Right side - mirrored with Stationery at y = 388)
     love.graphics.setFont(self.ui_bold)
     love.graphics.setColor(config.COLOR_TEXT_LIGHT[1], config.COLOR_TEXT_LIGHT[2], config.COLOR_TEXT_LIGHT[3], 1.0)
     local snk_w = self.ui_bold:getWidth("SNACKS")
-    love.graphics.print("SNACKS", 880 + (160 - snk_w) / 2, 145)
+    love.graphics.print("SNACKS", 970 + (130 - snk_w) / 2, 388)
     
     for idx = 1, 2 do
-        local ex = 895
-        local ey = 175 + (idx - 1) * 70
+        local ex = 970
+        local ey = 412 + (idx - 1) * 65
         love.graphics.setColor(20/255, 22/255, 30/255, 1.0)
-        love.graphics.rectangle("fill", ex, ey, 130, 60, 6, 6)
+        love.graphics.rectangle("fill", ex, ey, 130, 55, 6, 6)
         love.graphics.setColor(config.COLOR_TEXT_MUTED[1], config.COLOR_TEXT_MUTED[2], config.COLOR_TEXT_MUTED[3], 1.0)
         love.graphics.setLineWidth(1)
-        love.graphics.rectangle("line", ex, ey, 130, 60, 6, 6)
+        love.graphics.rectangle("line", ex, ey, 130, 55, 6, 6)
         
         if idx <= #self.run_manager.edits then
             local edit = self.run_manager.edits[idx]
@@ -600,12 +600,12 @@ function ScoringState:draw_desk_elements()
             love.graphics.setFont(self.ui_font)
             love.graphics.setColor(config.COLOR_TEXT_LIGHT[1], config.COLOR_TEXT_LIGHT[2], config.COLOR_TEXT_LIGHT[3], 1.0)
             local nw = self.ui_font:getWidth(name_clean)
-            love.graphics.print(name_clean, ex + (130 - nw) / 2, ey + 10)
+            love.graphics.print(name_clean, ex + (130 - nw) / 2, ey + 8)
             
             love.graphics.setFont(self.tooltip_font)
             love.graphics.setColor(config.COLOR_TEXT_MUTED[1], config.COLOR_TEXT_MUTED[2], config.COLOR_TEXT_MUTED[3], 1.0)
             local uw = self.tooltip_font:getWidth("Locked (scoring)")
-            love.graphics.print("Locked (scoring)", ex + (130 - uw) / 2, ey + 35)
+            love.graphics.print("Locked (scoring)", ex + (130 - uw) / 2, ey + 32)
         end
     end
 end

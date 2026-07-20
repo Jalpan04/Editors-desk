@@ -212,15 +212,15 @@ function ShopState:mousepressed(x, y, button, istouch, presses)
 end
 
 function ShopState:click_typewriter_key(mx, my)
-    local kbd_x = 400
-    local kbd_y = 450
+    local kbd_x = 423
+    local kbd_y = 480
     local key_size = 42
-    local key_gap = 8
+    local key_gap = 5
     
     for r_idx, row in ipairs(self.kbd_rows) do
         local offset = 0
-        if r_idx == 2 then offset = 18
-        elseif r_idx == 3 then offset = 36
+        if r_idx == 2 then offset = 22
+        elseif r_idx == 3 then offset = 52
         end
         for k_idx, char in ipairs(row) do
             local kx = kbd_x + offset + (k_idx - 1) * (key_size + key_gap)
@@ -396,10 +396,10 @@ function ShopState:draw()
     end
     
     -- 3. Keyboard at bottom
-    local kbd_x = 400
-    local kbd_y = 450
+    local kbd_x = 423
+    local kbd_y = 480
     local key_size = 42
-    local key_gap = 8
+    local key_gap = 5
     
     if self.pending_sticker ~= "none" then
         local prompt_str = "Click a key on the keyboard below to apply the sticker!"
@@ -413,8 +413,8 @@ function ShopState:draw()
         
         for r_idx, row in ipairs(self.kbd_rows) do
             local offset = 0
-            if r_idx == 2 then offset = 18
-            elseif r_idx == 3 then offset = 36
+            if r_idx == 2 then offset = 22
+            elseif r_idx == 3 then offset = 52
             end
             for k_idx, char in ipairs(row) do
                 local kx = kbd_x + offset + (k_idx - 1) * (key_size + key_gap)
