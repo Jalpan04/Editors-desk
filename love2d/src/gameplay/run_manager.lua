@@ -33,13 +33,13 @@ function RunManager.new(data_dir)
     end
     self.stapled_pairs = {}
     
+    local style_guides_data = require("src/content/style_guides").STYLE_GUIDES_DATA
     self.style_guides = {
-        ["The Masterpiece"] = 1,
-        ["The Jumble"] = 1,
-        ["The Shot in the Dark"] = 1,
-        ["The Total Rewrite"] = 1,
         ["Standard Submission"] = 1
     }
+    for pat, _ in pairs(style_guides_data) do
+        self.style_guides[pat] = 1
+    end
     
     self.key_discoveries = {}
     for c = 97, 122 do
@@ -147,7 +147,7 @@ function RunManager:start_round()
 end
 
 function RunManager:get_4_letter_target()
-    local words_4 = {"book", "page", "edit", "plot", "word", "desk", "read", "type", "inked", "bind"}
+    local words_4 = {"book", "page", "edit", "plot", "word", "desk", "read", "type", "inks", "bind"}
     local idx = love.math.random(1, #words_4)
     return words_4[idx]:sub(1, 4):lower()
 end

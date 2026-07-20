@@ -24,7 +24,7 @@ function PlotTwistTrope.new()
 end
 function PlotTwistTrope:on_equip(run_manager)
     self.apply_bonus_cb = function(score_manager, guess, clues, pattern_name)
-        if pattern_name == "Shot in the Dark" then
+        if pattern_name == "The Shot in the Dark" then
             score_manager:add_x_hype(15.0)
         end
     end

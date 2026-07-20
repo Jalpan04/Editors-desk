@@ -206,18 +206,22 @@ function GameState:click_edit_slot(mx, my)
                 end
             end
             if #target_tropes > 0 then
-                local msg = edit_item:use(self.run_manager, {target_trope = target_tropes[1]})
-                table.remove(self.run_manager.edits, clicked_idx)
-                self.particles:spawn(100, 615, config.COLOR_HIGHLIGHTER, 15)
+                local msg, success = edit_item:use(self.run_manager, {target_trope = target_tropes[1]})
+                if success then
+                    table.remove(self.run_manager.edits, clicked_idx)
+                    self.particles:spawn(100, 615, config.COLOR_HIGHLIGHTER, 15)
+                end
                 self:trigger_error(msg)
             else
                 self:trigger_error("No Tropes have active debuffs!")
             end
         else
-            local msg = edit_item:use(self.run_manager)
-            table.remove(self.run_manager.edits, clicked_idx)
-            local px = 40 + (clicked_idx - 1) * 150 + 65
-            self.particles:spawn(px, 615, config.COLOR_ROYALTIES, 15)
+            local msg, success = edit_item:use(self.run_manager)
+            if success then
+                table.remove(self.run_manager.edits, clicked_idx)
+                local px = 40 + (clicked_idx - 1) * 150 + 65
+                self.particles:spawn(px, 615, config.COLOR_ROYALTIES, 15)
+            end
             self:trigger_error(msg)
         end
     end
