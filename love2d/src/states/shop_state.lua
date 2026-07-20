@@ -410,72 +410,65 @@ function ShopState:draw()
         love.graphics.setColor(config.COLOR_HIGHLIGHTER[1], config.COLOR_HIGHLIGHTER[2], config.COLOR_HIGHLIGHTER[3], 1.0)
         local pr_w = self.prompt_font:getWidth(prompt_str)
         love.graphics.print(prompt_str, config.SCREEN_WIDTH / 2 - pr_w / 2, 405)
-    else
-        love.graphics.setFont(self.prompt_font)
-        love.graphics.setColor(config.COLOR_TEXT_MUTED[1], config.COLOR_TEXT_MUTED[2], config.COLOR_TEXT_MUTED[3], 1.0)
-        local rv_w = self.prompt_font:getWidth("Your Typewriter Keyboard stickers:")
-        love.graphics.print("Your Typewriter Keyboard stickers:", config.SCREEN_WIDTH / 2 - rv_w / 2, 405)
-    end
-    
-    for r_idx, row in ipairs(self.kbd_rows) do
-        local offset = 0
-        if r_idx == 2 then offset = 18
-        elseif r_idx == 3 then offset = 36
-        end
-        for k_idx, char in ipairs(row) do
-            local kx = kbd_x + offset + (k_idx - 1) * (key_size + key_gap)
-            local ky = kbd_y + (r_idx - 1) * (key_size + key_gap)
-            
-            local mods = self.run_manager.keyboard_mods[char] or {}
-            local is_highlighter = mods.highlighter == true
-            local is_correction_tape = mods.correction_tape == true
-            local is_stapler = mods.stapler == true
-            local is_removed = mods.removed == true
-            
-            local bg_color = config.COLOR_PANEL
-            local border_color = config.COLOR_TEXT_MUTED
-            
-            love.graphics.setColor(bg_color[1], bg_color[2], bg_color[3], 1.0)
-            love.graphics.rectangle("fill", kx, ky, key_size, key_size, 4, 4)
-            
-            if self.pending_sticker ~= "none" then
+        
+        for r_idx, row in ipairs(self.kbd_rows) do
+            local offset = 0
+            if r_idx == 2 then offset = 18
+            elseif r_idx == 3 then offset = 36
+            end
+            for k_idx, char in ipairs(row) do
+                local kx = kbd_x + offset + (k_idx - 1) * (key_size + key_gap)
+                local ky = kbd_y + (r_idx - 1) * (key_size + key_gap)
+                
+                local mods = self.run_manager.keyboard_mods[char] or {}
+                local is_highlighter = mods.highlighter == true
+                local is_correction_tape = mods.correction_tape == true
+                local is_stapler = mods.stapler == true
+                local is_removed = mods.removed == true
+                
+                local bg_color = config.COLOR_PANEL
+                local border_color = config.COLOR_TEXT_MUTED
+                
+                love.graphics.setColor(bg_color[1], bg_color[2], bg_color[3], 1.0)
+                love.graphics.rectangle("fill", kx, ky, key_size, key_size, 4, 4)
+                
                 if mx >= kx and mx <= kx + key_size and my >= ky and my <= ky + key_size then
                     border_color = config.COLOR_HIGHLIGHTER
                 end
-            end
-            
-            if is_highlighter and not is_removed then
-                love.graphics.setColor(config.COLOR_HIGHLIGHTER[1], config.COLOR_HIGHLIGHTER[2], config.COLOR_HIGHLIGHTER[3], 1.0)
-                love.graphics.setLineWidth(2)
+                
+                if is_highlighter and not is_removed then
+                    love.graphics.setColor(config.COLOR_HIGHLIGHTER[1], config.COLOR_HIGHLIGHTER[2], config.COLOR_HIGHLIGHTER[3], 1.0)
+                    love.graphics.setLineWidth(2)
+                    love.graphics.rectangle("line", kx, ky, key_size, key_size, 4, 4)
+                end
+                if is_correction_tape and not is_removed then
+                    love.graphics.setColor(230/255, 230/255, 240/255, 1.0)
+                    love.graphics.rectangle("fill", kx + 4, ky + key_size - 12, key_size - 8, 8)
+                end
+                if is_stapler and not is_removed then
+                    love.graphics.setColor(180/255, 180/255, 190/255, 1.0)
+                    love.graphics.setLineWidth(2)
+                    love.graphics.line(kx + 6, ky + 4, kx + key_size - 6, ky + 4)
+                    love.graphics.line(kx + 6, ky + key_size - 4, kx + key_size - 6, ky + key_size - 4)
+                end
+                
+                love.graphics.setColor(border_color[1], border_color[2], border_color[3], 1.0)
+                love.graphics.setLineWidth(1)
                 love.graphics.rectangle("line", kx, ky, key_size, key_size, 4, 4)
-            end
-            if is_correction_tape and not is_removed then
-                love.graphics.setColor(230/255, 230/255, 240/255, 1.0)
-                love.graphics.rectangle("fill", kx + 4, ky + key_size - 12, key_size - 8, 8)
-            end
-            if is_stapler and not is_removed then
-                love.graphics.setColor(180/255, 180/255, 190/255, 1.0)
-                love.graphics.setLineWidth(2)
-                love.graphics.line(kx + 6, ky + 4, kx + key_size - 6, ky + 4)
-                love.graphics.line(kx + 6, ky + key_size - 4, kx + key_size - 6, ky + key_size - 4)
-            end
-            
-            love.graphics.setColor(border_color[1], border_color[2], border_color[3], 1.0)
-            love.graphics.setLineWidth(1)
-            love.graphics.rectangle("line", kx, ky, key_size, key_size, 4, 4)
-            
-            if not is_removed then
-                love.graphics.setFont(self.desc_font)
-                love.graphics.setColor(config.COLOR_TEXT_LIGHT[1], config.COLOR_TEXT_LIGHT[2], config.COLOR_TEXT_LIGHT[3], 1.0)
-                local char_upper = char:upper()
-                local kw = self.desc_font:getWidth(char_upper)
-                local kh = self.desc_font:getHeight()
-                love.graphics.print(char_upper, kx + (key_size - kw) / 2, ky + (key_size - kh) / 2)
-            else
-                love.graphics.setColor(config.COLOR_ACCENT[1], config.COLOR_ACCENT[2], config.COLOR_ACCENT[3], 1.0)
-                love.graphics.setLineWidth(2)
-                love.graphics.line(kx + 6, ky + 6, kx + key_size - 6, ky + key_size - 6)
-                love.graphics.line(kx + key_size - 6, ky + 6, kx + 6, ky + key_size - 6)
+                
+                if not is_removed then
+                    love.graphics.setFont(self.desc_font)
+                    love.graphics.setColor(config.COLOR_TEXT_LIGHT[1], config.COLOR_TEXT_LIGHT[2], config.COLOR_TEXT_LIGHT[3], 1.0)
+                    local char_upper = char:upper()
+                    local kw = self.desc_font:getWidth(char_upper)
+                    local kh = self.desc_font:getHeight()
+                    love.graphics.print(char_upper, kx + (key_size - kw) / 2, ky + (key_size - kh) / 2)
+                else
+                    love.graphics.setColor(config.COLOR_ACCENT[1], config.COLOR_ACCENT[2], config.COLOR_ACCENT[3], 1.0)
+                    love.graphics.setLineWidth(2)
+                    love.graphics.line(kx + 6, ky + 6, kx + key_size - 6, ky + key_size - 6)
+                    love.graphics.line(kx + key_size - 6, ky + 6, kx + 6, ky + key_size - 6)
+                end
             end
         end
     end
