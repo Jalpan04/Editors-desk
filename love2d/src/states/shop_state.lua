@@ -260,8 +260,7 @@ function ShopState:click_typewriter_key(mx, my)
 end
 
 function ShopState:draw()
-    love.graphics.setColor(config.COLOR_DESK[1], config.COLOR_DESK[2], config.COLOR_DESK[3], 1.0)
-    love.graphics.rectangle("fill", 0, 0, config.SCREEN_WIDTH, config.SCREEN_HEIGHT)
+    ui.draw_background()
     
     -- 1. Status Bar
     love.graphics.setColor(config.COLOR_PANEL[1], config.COLOR_PANEL[2], config.COLOR_PANEL[3], 1.0)

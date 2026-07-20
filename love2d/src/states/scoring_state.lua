@@ -208,8 +208,8 @@ function ScoringState:update(dt)
                 local total_w = w_len * box_w + (w_len - 1) * box_gap
                 local start_x = px + (pw - total_w) / 2
                 
-                local visible_rows = math.min(5, #self.run_manager.round_history)
-                local row_y = 100 + (visible_rows - 1) * 50
+                local hist_len = #self.run_manager.round_history
+                local row_y = 100 + math.min(3, hist_len - 1) * 50
                 
                 local letter_center_x = start_x + (self.letter_idx - 1) * (box_w + box_gap) + box_w / 2
                 local letter_center_y = row_y + box_w / 2
@@ -222,6 +222,21 @@ function ScoringState:update(dt)
                 end
                 
                 self.particles:spawn(letter_center_x, letter_center_y, p_color, 8)
+                
+                if config.images.fx_stamp_impact then
+                    table.insert(self.floats, {
+                        type = "image",
+                        img = config.images.fx_stamp_impact,
+                        x = letter_center_x,
+                        y = letter_center_y,
+                        vx = 0,
+                        vy = 0,
+                        color = p_color,
+                        scale = 0.45,
+                        life = 0.25,
+                        max_life = 0.25
+                    })
+                end
                 
                 local mods = self.run_manager.keyboard_mods[char] or {}
                 local repeat_cnt = mods.stapler and 2 or 1
@@ -270,8 +285,7 @@ function ScoringState:update(dt)
 end
 
 function ScoringState:draw()
-    love.graphics.setColor(config.COLOR_DESK[1], config.COLOR_DESK[2], config.COLOR_DESK[3], 1.0)
-    love.graphics.rectangle("fill", 0, 0, config.SCREEN_WIDTH, config.SCREEN_HEIGHT)
+    ui.draw_background()
     
     local offset_x, offset_y = self.shake:get_offset()
     
@@ -295,19 +309,32 @@ function ScoringState:draw()
     end
     love.graphics.pop()
     
-    love.graphics.setFont(self.ui_bold)
     for _, f in ipairs(self.floats) do
-        love.graphics.setColor(f.color[1], f.color[2], f.color[3], 1.0)
-        local fw = self.ui_bold:getWidth(f.text)
-        love.graphics.print(f.text, f.x - fw / 2, f.y - 12)
+        if f.type == "image" then
+            if f.img then
+                local alpha = math.max(0, math.min(1.0, f.life / f.max_life))
+                love.graphics.setColor(f.color[1], f.color[2], f.color[3], alpha)
+                local w = f.img:getWidth()
+                local h = f.img:getHeight()
+                local draw_scale = (f.scale or 1.0) * (1.8 - 0.8 * alpha)
+                love.graphics.draw(f.img, f.x, f.y, 0, draw_scale, draw_scale, w / 2, h / 2)
+            end
+        else
+            love.graphics.setColor(f.color[1], f.color[2], f.color[3], 1.0)
+            love.graphics.setFont(self.ui_bold)
+            local fw = self.ui_bold:getWidth(f.text)
+            love.graphics.print(f.text, f.x - fw / 2, f.y - 12)
+        end
     end
     
     self.particles:draw()
 end
 
 function ScoringState:draw_desk_elements()
+    ui.draw_sidebar(25, 70, 340, 615)
+    
     -- 1. Left Panel - Hype Meter
-    love.graphics.setColor(config.COLOR_PANEL[1], config.COLOR_PANEL[2], config.COLOR_PANEL[3], 1.0)
+    love.graphics.setColor(config.COLOR_PANEL[1], config.COLOR_PANEL[2], config.COLOR_PANEL[3], config.images.bg_sidebar and 0.85 or 1.0)
     love.graphics.rectangle("fill", 40, 80, 310, 220, 10, 10)
     love.graphics.setColor(config.COLOR_TEXT_MUTED[1], config.COLOR_TEXT_MUTED[2], config.COLOR_TEXT_MUTED[3], 1.0)
     love.graphics.setLineWidth(2)
@@ -342,7 +369,7 @@ function ScoringState:draw_desk_elements()
     love.graphics.print(stage_name, 60, 250)
     
     -- Resources
-    love.graphics.setColor(config.COLOR_PANEL[1], config.COLOR_PANEL[2], config.COLOR_PANEL[3], 1.0)
+    love.graphics.setColor(config.COLOR_PANEL[1], config.COLOR_PANEL[2], config.COLOR_PANEL[3], config.images.bg_sidebar and 0.85 or 1.0)
     love.graphics.rectangle("fill", 40, 315, 310, 80, 10, 10)
     love.graphics.setFont(self.ui_font)
     love.graphics.setColor(config.COLOR_TEXT_LIGHT[1], config.COLOR_TEXT_LIGHT[2], config.COLOR_TEXT_LIGHT[3], 1.0)
@@ -408,8 +435,19 @@ function ScoringState:draw_desk_elements()
     local px, py, pw, ph = 400, 80, 440, 360
     love.graphics.setColor(20/255, 20/255, 25/255, 1.0)
     love.graphics.rectangle("fill", px - 6, py - 6, pw + 12, ph + 12, 8, 8)
-    love.graphics.setColor(config.COLOR_PAPER[1], config.COLOR_PAPER[2], config.COLOR_PAPER[3], 1.0)
-    love.graphics.rectangle("fill", px, py, pw, ph, 6, 6)
+    
+    if config.images.overlay_paper then
+        love.graphics.setColor(1.0, 1.0, 1.0, 1.0)
+        love.graphics.draw(config.images.overlay_paper, px, py, 0, pw / config.images.overlay_paper:getWidth(), ph / config.images.overlay_paper:getHeight())
+    else
+        love.graphics.setColor(config.COLOR_PAPER[1], config.COLOR_PAPER[2], config.COLOR_PAPER[3], 1.0)
+        love.graphics.rectangle("fill", px, py, pw, ph, 6, 6)
+    end
+    
+    if config.images.stain_ink then
+        love.graphics.setColor(1.0, 1.0, 1.0, 0.45)
+        love.graphics.draw(config.images.stain_ink, px + pw - 90, py + 15, 0, 70 / config.images.stain_ink:getWidth(), 70 / config.images.stain_ink:getHeight())
+    end
     
     local box_w = 40
     local box_gap = 8
@@ -433,17 +471,33 @@ function ScoringState:draw_desk_elements()
             local clue = clues[l_idx]
             local box_x = start_x + (l_idx - 1) * (box_w + box_gap)
             
-            local col = config.COLOR_CLUE_EMPTY
-            if clue == "green" then col = config.COLOR_CLUE_GREEN
-            elseif clue == "yellow" then col = config.COLOR_CLUE_YELLOW
-            elseif clue == "grey" then col = config.COLOR_CLUE_GREY
-            elseif clue == "redacted" then col = config.COLOR_CLUE_REDACTED
+            local tile_img = config.images.tile_empty
+            if clue == "green" then tile_img = config.images.tile_green
+            elseif clue == "yellow" then tile_img = config.images.tile_yellow
+            elseif clue == "grey" then tile_img = config.images.tile_grey
             end
             
-            love.graphics.setColor(col[1], col[2], col[3], 1.0)
-            love.graphics.rectangle("fill", box_x, row_y, box_w, box_w, 4, 4)
+            if tile_img then
+                love.graphics.setColor(1.0, 1.0, 1.0, 1.0)
+                love.graphics.draw(tile_img, box_x, row_y, 0, box_w / tile_img:getWidth(), box_w / tile_img:getHeight())
+            else
+                local col = config.COLOR_CLUE_EMPTY
+                if clue == "green" then col = config.COLOR_CLUE_GREEN
+                elseif clue == "yellow" then col = config.COLOR_CLUE_YELLOW
+                elseif clue == "grey" then col = config.COLOR_CLUE_GREY
+                elseif clue == "redacted" then col = config.COLOR_CLUE_REDACTED
+                end
+                love.graphics.setColor(col[1], col[2], col[3], 1.0)
+                love.graphics.rectangle("fill", box_x, row_y, box_w, box_w, 4, 4)
+            end
             
-            local let_color = (col == config.COLOR_CLUE_EMPTY) and config.COLOR_TEXT_DARK or config.COLOR_TEXT_LIGHT
+            if clue == "redacted" then
+                love.graphics.setColor(139/255, 69/255, 19/255, 0.7)
+                love.graphics.setLineWidth(3)
+                love.graphics.circle("line", box_x + box_w/2, row_y + box_w/2, box_w/2 - 4)
+            end
+            
+            local let_color = (clue == "empty") and config.COLOR_TEXT_DARK or config.COLOR_TEXT_LIGHT
             love.graphics.setFont(self.typewriter_font)
             love.graphics.setColor(let_color[1], let_color[2], let_color[3], 1.0)
             local char_upper = char:upper()
@@ -479,15 +533,31 @@ function ScoringState:draw_desk_elements()
         local box_x = start_x + (l_idx - 1) * (box_w + box_gap)
         
         local clue = clues[l_idx]
-        local col = config.COLOR_CLUE_EMPTY
-        if clue == "green" then col = config.COLOR_CLUE_GREEN
-        elseif clue == "yellow" then col = config.COLOR_CLUE_YELLOW
-        elseif clue == "grey" then col = config.COLOR_CLUE_GREY
-        elseif clue == "redacted" then col = config.COLOR_CLUE_REDACTED
+        local tile_img = config.images.tile_empty
+        if clue == "green" then tile_img = config.images.tile_green
+        elseif clue == "yellow" then tile_img = config.images.tile_yellow
+        elseif clue == "grey" then tile_img = config.images.tile_grey
         end
         
-        love.graphics.setColor(col[1], col[2], col[3], 1.0)
-        love.graphics.rectangle("fill", box_x, row_y, box_w, box_w, 4, 4)
+        if tile_img then
+            love.graphics.setColor(1.0, 1.0, 1.0, 1.0)
+            love.graphics.draw(tile_img, box_x, row_y, 0, box_w / tile_img:getWidth(), box_w / tile_img:getHeight())
+        else
+            local col = config.COLOR_CLUE_EMPTY
+            if clue == "green" then col = config.COLOR_CLUE_GREEN
+            elseif clue == "yellow" then col = config.COLOR_CLUE_YELLOW
+            elseif clue == "grey" then col = config.COLOR_CLUE_GREY
+            elseif clue == "redacted" then col = config.COLOR_CLUE_REDACTED
+            end
+            love.graphics.setColor(col[1], col[2], col[3], 1.0)
+            love.graphics.rectangle("fill", box_x, row_y, box_w, box_w, 4, 4)
+        end
+        
+        if clue == "redacted" then
+            love.graphics.setColor(139/255, 69/255, 19/255, 0.7)
+            love.graphics.setLineWidth(3)
+            love.graphics.circle("line", box_x + box_w/2, row_y + box_w/2, box_w/2 - 4)
+        end
         
         if l_idx == self.letter_idx and self.anim_stage == "letters" then
             love.graphics.setColor(config.COLOR_HIGHLIGHTER[1], config.COLOR_HIGHLIGHTER[2], config.COLOR_HIGHLIGHTER[3], 1.0)
@@ -495,7 +565,7 @@ function ScoringState:draw_desk_elements()
             love.graphics.rectangle("line", box_x, row_y, box_w, box_w, 4, 4)
         end
         
-        local let_color = (col == config.COLOR_CLUE_EMPTY) and config.COLOR_TEXT_DARK or config.COLOR_TEXT_LIGHT
+        local let_color = (clue == "empty") and config.COLOR_TEXT_DARK or config.COLOR_TEXT_LIGHT
         love.graphics.setFont(self.typewriter_font)
         love.graphics.setColor(let_color[1], let_color[2], let_color[3], 1.0)
         local char_upper = char:upper()

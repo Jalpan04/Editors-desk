@@ -77,15 +77,19 @@ function MenuState:mousepressed(x, y, button, istouch, presses)
 end
 
 function MenuState:draw()
-    love.graphics.setColor(config.COLOR_DESK[1], config.COLOR_DESK[2], config.COLOR_DESK[3], 1.0)
-    love.graphics.rectangle("fill", 0, 0, config.SCREEN_WIDTH, config.SCREEN_HEIGHT)
+    ui.draw_background()
     
     local px, py, pw, ph = config.SCREEN_WIDTH / 2 - 350, 50, 700, 620
     love.graphics.setColor(20/255, 20/255, 25/255, 1.0)
     love.graphics.rectangle("fill", px - 4, py - 4, pw + 8, ph + 8, 8, 8)
     
-    love.graphics.setColor(config.COLOR_PAPER[1], config.COLOR_PAPER[2], config.COLOR_PAPER[3], 1.0)
-    love.graphics.rectangle("fill", px, py, pw, ph, 6, 6)
+    if config.images.overlay_paper then
+        love.graphics.setColor(1.0, 1.0, 1.0, 1.0)
+        love.graphics.draw(config.images.overlay_paper, px, py, 0, pw / config.images.overlay_paper:getWidth(), ph / config.images.overlay_paper:getHeight())
+    else
+        love.graphics.setColor(config.COLOR_PAPER[1], config.COLOR_PAPER[2], config.COLOR_PAPER[3], 1.0)
+        love.graphics.rectangle("fill", px, py, pw, ph, 6, 6)
+    end
     
     local title_str = "The Editor's Desk"
     if self.show_cursor then
