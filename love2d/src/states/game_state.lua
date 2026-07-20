@@ -426,11 +426,6 @@ function GameState:draw_gameplay()
         love.graphics.rectangle("fill", px, py, pw, ph, 6, 6)
     end
     
-    if config.images.stain_ink then
-        love.graphics.setColor(1.0, 1.0, 1.0, 0.45)
-        love.graphics.draw(config.images.stain_ink, px + pw - 90, py + 15, 0, 70 / config.images.stain_ink:getWidth(), 70 / config.images.stain_ink:getHeight())
-    end
-    
     -- Rows history
     local row_y = 100
     local hist_len = #self.run_manager.round_history

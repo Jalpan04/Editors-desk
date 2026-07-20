@@ -316,7 +316,8 @@ function ScoringState:draw()
                 love.graphics.setColor(f.color[1], f.color[2], f.color[3], alpha)
                 local w = f.img:getWidth()
                 local h = f.img:getHeight()
-                local draw_scale = (f.scale or 1.0) * (1.8 - 0.8 * alpha)
+                local base_scale = 50 / w
+                local draw_scale = base_scale * (1.8 - 0.8 * alpha)
                 love.graphics.draw(f.img, f.x, f.y, 0, draw_scale, draw_scale, w / 2, h / 2)
             end
         else
@@ -442,11 +443,6 @@ function ScoringState:draw_desk_elements()
     else
         love.graphics.setColor(config.COLOR_PAPER[1], config.COLOR_PAPER[2], config.COLOR_PAPER[3], 1.0)
         love.graphics.rectangle("fill", px, py, pw, ph, 6, 6)
-    end
-    
-    if config.images.stain_ink then
-        love.graphics.setColor(1.0, 1.0, 1.0, 0.45)
-        love.graphics.draw(config.images.stain_ink, px + pw - 90, py + 15, 0, 70 / config.images.stain_ink:getWidth(), 70 / config.images.stain_ink:getHeight())
     end
     
     local box_w = 40
