@@ -583,11 +583,11 @@ function ScoringState:draw_desk_elements()
     love.graphics.setFont(self.ui_bold)
     love.graphics.setColor(config.COLOR_TEXT_LIGHT[1], config.COLOR_TEXT_LIGHT[2], config.COLOR_TEXT_LIGHT[3], 1.0)
     local snk_w = self.ui_bold:getWidth("SNACKS")
-    love.graphics.print("SNACKS", 880 + (160 - snk_w) / 2, 265)
+    love.graphics.print("SNACKS", 880 + (160 - snk_w) / 2, 145)
     
     for idx = 1, 2 do
         local ex = 895
-        local ey = 295 + (idx - 1) * 70
+        local ey = 175 + (idx - 1) * 70
         love.graphics.setColor(20/255, 22/255, 30/255, 1.0)
         love.graphics.rectangle("fill", ex, ey, 130, 60, 6, 6)
         love.graphics.setColor(config.COLOR_TEXT_MUTED[1], config.COLOR_TEXT_MUTED[2], config.COLOR_TEXT_MUTED[3], 1.0)

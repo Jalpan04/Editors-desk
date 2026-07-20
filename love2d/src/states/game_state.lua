@@ -41,13 +41,13 @@ end
 function GameState:setup_buttons()
     self.buttons = {}
     table.insert(self.buttons, ui.Button.new(
-        880, 140, 160, 45,
+        880, 515, 160, 45,
         "Draft Word",
         function() self:press_draft() end,
         {230/255, 180/255, 30/255}
     ))
     table.insert(self.buttons, ui.Button.new(
-        880, 200, 160, 45,
+        880, 575, 160, 45,
         "Submit Word",
         function() self:press_submit() end,
         {46/255, 180/255, 110/255}
@@ -188,7 +188,7 @@ function GameState:click_edit_slot(mx, my)
     local clicked_idx = -1
     for idx = 1, 2 do
         local ex = 895
-        local ey = 295 + (idx - 1) * 70
+        local ey = 175 + (idx - 1) * 70
         if mx >= ex and mx <= ex + 130 and my >= ey and my <= ey + 60 then
             clicked_idx = idx
             break
@@ -208,7 +208,7 @@ function GameState:click_edit_slot(mx, my)
             if #target_tropes > 0 then
                 local msg = edit_item:use(self.run_manager, {target_trope = target_tropes[1]})
                 table.remove(self.run_manager.edits, clicked_idx)
-                self.particles:spawn(960, 295 + (clicked_idx - 1) * 70 + 30, config.COLOR_HIGHLIGHTER, 15)
+                self.particles:spawn(960, 175 + (clicked_idx - 1) * 70 + 30, config.COLOR_HIGHLIGHTER, 15)
                 self:trigger_error(msg)
             else
                 self:trigger_error("No Tropes have active debuffs!")
@@ -216,7 +216,7 @@ function GameState:click_edit_slot(mx, my)
         else
             local msg = edit_item:use(self.run_manager)
             table.remove(self.run_manager.edits, clicked_idx)
-            self.particles:spawn(960, 295 + (clicked_idx - 1) * 70 + 30, config.COLOR_ROYALTIES, 15)
+            self.particles:spawn(960, 175 + (clicked_idx - 1) * 70 + 30, config.COLOR_ROYALTIES, 15)
             self:trigger_error(msg)
         end
     end
@@ -242,7 +242,7 @@ function GameState:check_tooltips(mx, my)
     
     for idx, edit in ipairs(self.run_manager.edits) do
         local ex = 895
-        local ey = 295 + (idx - 1) * 70
+        local ey = 175 + (idx - 1) * 70
         if mx >= ex and mx <= ex + 130 and my >= ey and my <= ey + 60 then
             self.hovered_tooltip = {
                 title = edit.name,
@@ -585,20 +585,15 @@ function GameState:draw_gameplay()
         love.graphics.print(self.error_message, bx + (bw - ew) / 2, by + (bh - eh) / 2)
     end
     
-    -- Buttons
-    for _, btn in ipairs(self.buttons) do
-        btn:draw()
-    end
-    
-    -- Snacks (Right side below Buttons)
+    -- Snacks (Right side upper)
     love.graphics.setFont(self.ui_bold)
     love.graphics.setColor(config.COLOR_TEXT_LIGHT[1], config.COLOR_TEXT_LIGHT[2], config.COLOR_TEXT_LIGHT[3], 1.0)
     local snk_w = self.ui_bold:getWidth("SNACKS")
-    love.graphics.print("SNACKS", 880 + (160 - snk_w) / 2, 265)
+    love.graphics.print("SNACKS", 880 + (160 - snk_w) / 2, 145)
     
     for idx = 1, 2 do
         local ex = 895
-        local ey = 295 + (idx - 1) * 70
+        local ey = 175 + (idx - 1) * 70
         love.graphics.setColor(20/255, 22/255, 30/255, 1.0)
         love.graphics.rectangle("fill", ex, ey, 130, 60, 6, 6)
         love.graphics.setColor(config.COLOR_TEXT_MUTED[1], config.COLOR_TEXT_MUTED[2], config.COLOR_TEXT_MUTED[3], 1.0)
@@ -618,6 +613,11 @@ function GameState:draw_gameplay()
             local uw = self.tooltip_font:getWidth("Click to use")
             love.graphics.print("Click to use", ex + (130 - uw) / 2, ey + 35)
         end
+    end
+    
+    -- Buttons (Right side next to Keyboard)
+    for _, btn in ipairs(self.buttons) do
+        btn:draw()
     end
 end
 
