@@ -353,7 +353,7 @@ function ScoringState:draw_desk_elements()
     -- Tropes
     love.graphics.setFont(self.ui_bold)
     love.graphics.setColor(config.COLOR_TEXT_LIGHT[1], config.COLOR_TEXT_LIGHT[2], config.COLOR_TEXT_LIGHT[3], 1.0)
-    love.graphics.print("THE EDITOR'S TROPES (PASSIVES)", 40, 408)
+    love.graphics.print("TROPES (PASSIVES)", 40, 408)
     for idx = 1, 5 do
         local tx = 40 + (idx - 1) * 68
         love.graphics.setColor(20/255, 22/255, 30/255, 1.0)

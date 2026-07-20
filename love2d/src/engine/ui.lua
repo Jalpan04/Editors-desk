@@ -159,7 +159,7 @@ function Button.new(x, y, width, height, text, callback, color, text_color, font
     self.text_color = text_color or config.COLOR_TEXT_LIGHT
     
     self.font_type = font_type or "sans"
-    self.font_size = font_size or 24
+    self.font_size = font_size or 20
     self.font = config.get_font(self.font_type, self.font_size)
     
     self.is_hovered = false
@@ -223,9 +223,17 @@ function Button:draw()
     
     local text_w = self.font:getWidth(self.text)
     local text_h = self.font:getHeight()
-    local tx = self.x + (self.width - text_w) / 2
-    local ty = self.y - offset_y + (self.height - text_h) / 2
-    love.graphics.print(self.text, tx, ty)
+    local max_w = self.width - 16
+    local scale = 1.0
+    if text_w > max_w then
+        scale = max_w / text_w
+    end
+    
+    local cx = self.x + self.width / 2
+    local cy = self.y - offset_y + self.height / 2
+    local visual_offset_y = 1
+    
+    love.graphics.print(self.text, cx, cy - visual_offset_y, 0, scale, scale, text_w / 2, text_h / 2)
 end
 
 ui.Button = Button

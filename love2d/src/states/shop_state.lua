@@ -43,7 +43,7 @@ function ShopState:enter(kwargs)
     self:roll_shop()
     
     table.insert(self.buttons, ui.Button.new(
-        config.SCREEN_WIDTH - 220, 15, 190, 40,
+        config.SCREEN_WIDTH - 200, 10, 180, 40,
         "Next Assignment",
         function() self:next_assignment() end,
         {46/255, 180/255, 110/255}
@@ -213,7 +213,7 @@ end
 
 function ShopState:click_typewriter_key(mx, my)
     local kbd_x = 400
-    local kbd_y = 440
+    local kbd_y = 450
     local key_size = 42
     local key_gap = 8
     
@@ -383,12 +383,15 @@ function ShopState:draw()
             love.graphics.setColor(col_accent[1], col_accent[2], col_accent[3], 1.0)
             love.graphics.rectangle("line", bx, by, bw, bh, 6, 6)
             
-            love.graphics.setFont(self.label_font)
-            love.graphics.setColor(config.COLOR_TEXT_LIGHT[1], config.COLOR_TEXT_LIGHT[2], config.COLOR_TEXT_LIGHT[3], 1.0)
             local buy_str = "Buy - $" .. price
             local buy_w = self.label_font:getWidth(buy_str)
             local buy_h = self.label_font:getHeight()
-            love.graphics.print(buy_str, bx + (bw - buy_w) / 2, by + (bh - buy_h) / 2)
+            local cx = bx + bw / 2
+            local cy = by + bh / 2
+            
+            love.graphics.setFont(self.label_font)
+            love.graphics.setColor(config.COLOR_TEXT_LIGHT[1], config.COLOR_TEXT_LIGHT[2], config.COLOR_TEXT_LIGHT[3], 1.0)
+            love.graphics.print(buy_str, cx, cy - 1, 0, 1, 1, buy_w / 2, buy_h / 2)
         end
     end
     

@@ -349,7 +349,7 @@ function GameState:draw_gameplay()
     -- Tropes
     love.graphics.setFont(self.ui_bold)
     love.graphics.setColor(config.COLOR_TEXT_LIGHT[1], config.COLOR_TEXT_LIGHT[2], config.COLOR_TEXT_LIGHT[3], 1.0)
-    love.graphics.print("THE EDITOR'S TROPES (PASSIVES)", 40, 408)
+    love.graphics.print("TROPES (PASSIVES)", 40, 408)
     
     for idx = 1, 5 do
         local tx = 40 + (idx - 1) * 68
@@ -477,13 +477,18 @@ function GameState:draw_gameplay()
         row_y = row_y + 50
     end
     
-    -- Active Input Boxes
+    -- Active Input Boxes (dynamically aligned on the next line of the manuscript paper)
     local input_len = (self.run_manager.boss_assignment == "Minimalist") and 4 or 5
-    local box_w = 48
-    local box_gap = 10
+    local box_w = 40
+    local box_gap = 8
     local total_w = input_len * box_w + (input_len - 1) * box_gap
     local start_x = px + (pw - total_w) / 2
-    local input_y = 350
+    local input_y = row_y
+    
+    -- Draw active input row outline
+    love.graphics.setColor(config.COLOR_HIGHLIGHTER[1], config.COLOR_HIGHLIGHTER[2], config.COLOR_HIGHLIGHTER[3], 1.0)
+    love.graphics.setLineWidth(2)
+    love.graphics.rectangle("line", start_x - 4, input_y - 4, total_w + 8, box_w + 8, 6, 6)
     
     for l_idx = 1, input_len do
         local box_x = start_x + (l_idx - 1) * (box_w + box_gap)
@@ -491,7 +496,7 @@ function GameState:draw_gameplay()
         love.graphics.setColor(230/255, 225/255, 215/255, 1.0)
         love.graphics.rectangle("fill", box_x, input_y, box_w, box_w, 4, 4)
         love.graphics.setColor(config.COLOR_TEXT_DARK[1], config.COLOR_TEXT_DARK[2], config.COLOR_TEXT_DARK[3], 1.0)
-        love.graphics.setLineWidth(2)
+        love.graphics.setLineWidth(1)
         love.graphics.rectangle("line", box_x, input_y, box_w, box_w, 4, 4)
         
         if l_idx <= #self.current_input then
@@ -502,11 +507,11 @@ function GameState:draw_gameplay()
                 love.graphics.rectangle("fill", box_x, input_y, box_w, box_w, 4, 4)
             end
             
-            love.graphics.setFont(self.typewriter_lg)
+            love.graphics.setFont(self.typewriter_font)
             love.graphics.setColor(config.COLOR_TEXT_DARK[1], config.COLOR_TEXT_DARK[2], config.COLOR_TEXT_DARK[3], 1.0)
             local char_upper = char:upper()
-            local lw = self.typewriter_lg:getWidth(char_upper)
-            local lh = self.typewriter_lg:getHeight()
+            local lw = self.typewriter_font:getWidth(char_upper)
+            local lh = self.typewriter_font:getHeight()
             love.graphics.print(char_upper, box_x + (box_w - lw) / 2, input_y + (box_w - lh) / 2)
         end
     end
