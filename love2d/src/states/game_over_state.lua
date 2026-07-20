@@ -80,19 +80,14 @@ function GameOverState:mousepressed(x, y, button, istouch, presses)
 end
 
 function GameOverState:draw()
-    ui.draw_background()
+    love.graphics.setColor(config.COLOR_DESK[1], config.COLOR_DESK[2], config.COLOR_DESK[3], 1.0)
+    love.graphics.rectangle("fill", 0, 0, config.SCREEN_WIDTH, config.SCREEN_HEIGHT)
     
     local px, py, pw, ph = config.SCREEN_WIDTH / 2 - 320, 60, 640, 600
     love.graphics.setColor(15/255, 15/255, 20/255, 1.0)
     love.graphics.rectangle("fill", px - 8, py - 8, pw + 16, ph + 16, 8, 8)
-    
-    if config.images.overlay_paper then
-        love.graphics.setColor(1.0, 1.0, 1.0, 1.0)
-        love.graphics.draw(config.images.overlay_paper, px, py, 0, pw / config.images.overlay_paper:getWidth(), ph / config.images.overlay_paper:getHeight())
-    else
-        love.graphics.setColor(config.COLOR_PAPER[1], config.COLOR_PAPER[2], config.COLOR_PAPER[3], 1.0)
-        love.graphics.rectangle("fill", px, py, pw, ph, 6, 6)
-    end
+    love.graphics.setColor(config.COLOR_PAPER[1], config.COLOR_PAPER[2], config.COLOR_PAPER[3], 1.0)
+    love.graphics.rectangle("fill", px, py, pw, ph, 6, 6)
     
     local title_text, accent_col, desc_text
     if self.result == "published" then

@@ -23,9 +23,6 @@ function love.load()
     -- Setup virtual drawing canvas (16:9 ratio)
     canvas = love.graphics.newCanvas(config.SCREEN_WIDTH, config.SCREEN_HEIGHT)
     
-    -- Load UI images
-    config.load_images()
-    
     -- Initialize sound manager
     sound_manager.init("assets/audio")
     

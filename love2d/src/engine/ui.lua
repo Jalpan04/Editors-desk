@@ -2,23 +2,6 @@ local config = require("src/config")
 
 local ui = {}
 
-function ui.draw_background()
-    if config.images.bg_desk then
-        love.graphics.setColor(1.0, 1.0, 1.0, 1.0)
-        love.graphics.draw(config.images.bg_desk, 0, 0, 0, config.SCREEN_WIDTH / config.images.bg_desk:getWidth(), config.SCREEN_HEIGHT / config.images.bg_desk:getHeight())
-    else
-        love.graphics.setColor(config.COLOR_DESK[1], config.COLOR_DESK[2], config.COLOR_DESK[3], 1.0)
-        love.graphics.rectangle("fill", 0, 0, config.SCREEN_WIDTH, config.SCREEN_HEIGHT)
-    end
-end
-
-function ui.draw_sidebar(x, y, w, h)
-    if config.images.bg_sidebar then
-        love.graphics.setColor(1.0, 1.0, 1.0, 1.0)
-        love.graphics.draw(config.images.bg_sidebar, x, y, 0, w / config.images.bg_sidebar:getWidth(), h / config.images.bg_sidebar:getHeight())
-    end
-end
-
 function ui.get_scale_rect(window_w, window_h, target_aspect)
     target_aspect = target_aspect or (16 / 9)
     local window_aspect = window_w / window_h

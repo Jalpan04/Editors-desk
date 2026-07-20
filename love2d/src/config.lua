@@ -75,23 +75,4 @@ end
 
 config.sounds = nil
 
-config.images = {}
-function config.load_images()
-    local image_files = {
-        bg_desk = "assets/bg_desk.png",
-        bg_sidebar = "assets/bg_sidebar.png",
-        fx_stamp_impact = "assets/fx_stamp_impact.png",
-        overlay_paper = "assets/overlay_paper.png",
-        stain_ink = "assets/stain_ink_1.png",
-        tile_green = "assets/tile_green.png",
-        tile_grey = "assets/tile_grey.png",
-        tile_yellow = "assets/tile_yellow.png"
-    }
-    for name, path in pairs(image_files) do
-        if love.filesystem.getInfo(path) then
-            config.images[name] = love.graphics.newImage(path)
-        end
-    end
-end
-
 return config

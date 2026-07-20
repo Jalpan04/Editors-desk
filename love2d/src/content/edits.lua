@@ -50,7 +50,7 @@ function MagnifyingGlassEdit:use(run_manager, kwargs)
     end
     
     local letter = target:sub(reveal_idx, reveal_idx):upper()
-    return "Clue: Index " .. reveal_idx .. " is '" .. letter .. "'!", true
+    return "Clue: Index " .. reveal_idx .. " is '" .. letter .. "'!"
 end
 
 local EspressoShotEdit = setmetatable({}, Edit)
@@ -61,10 +61,10 @@ function EspressoShotEdit.new()
 end
 function EspressoShotEdit:use(run_manager, kwargs)
     if run_manager.submissions_left >= run_manager.submissions_max then
-        return "Submissions already at maximum!", false
+        return "Submissions already at maximum!"
     end
     run_manager.submissions_left = run_manager.submissions_left + 1
-    return "Gained +1 Submission!", true
+    return "Gained +1 Submission!"
 end
 
 local ShredderEdit = setmetatable({}, Edit)
@@ -85,7 +85,7 @@ function ShredderEdit:use(run_manager, kwargs)
         run_manager.target_word = run_manager.dictionary:get_random_target()
     end
     
-    return "Board shredded! New target word loaded and score reset.", true
+    return "Board shredded! New target word loaded and score reset."
 end
 
 local WhiteOutEdit = setmetatable({}, Edit)
@@ -102,7 +102,7 @@ function WhiteOutEdit:use(run_manager, kwargs)
         end
     end
     if #target_tropes == 0 then
-        return "No active Tropes have debuffs to remove!", false
+        return "No active Tropes have debuffs to remove!"
     end
     
     kwargs = kwargs or {}
@@ -120,7 +120,7 @@ function WhiteOutEdit:use(run_manager, kwargs)
         run_manager.submissions_left = math.min(run_manager.submissions_left + 1, 4)
     end
     
-    return "Debuff removed from '" .. target_trope.name .. "'!", true
+    return "Debuff removed from '" .. target_trope.name .. "'!"
 end
 
 local function create_all_edits()

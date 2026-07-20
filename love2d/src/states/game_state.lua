@@ -206,22 +206,18 @@ function GameState:click_edit_slot(mx, my)
                 end
             end
             if #target_tropes > 0 then
-                local msg, success = edit_item:use(self.run_manager, {target_trope = target_tropes[1]})
-                if success then
-                    table.remove(self.run_manager.edits, clicked_idx)
-                    self.particles:spawn(100, 615, config.COLOR_HIGHLIGHTER, 15)
-                end
+                local msg = edit_item:use(self.run_manager, {target_trope = target_tropes[1]})
+                table.remove(self.run_manager.edits, clicked_idx)
+                self.particles:spawn(100, 615, config.COLOR_HIGHLIGHTER, 15)
                 self:trigger_error(msg)
             else
                 self:trigger_error("No Tropes have active debuffs!")
             end
         else
-            local msg, success = edit_item:use(self.run_manager)
-            if success then
-                table.remove(self.run_manager.edits, clicked_idx)
-                local px = 40 + (clicked_idx - 1) * 150 + 65
-                self.particles:spawn(px, 615, config.COLOR_ROYALTIES, 15)
-            end
+            local msg = edit_item:use(self.run_manager)
+            table.remove(self.run_manager.edits, clicked_idx)
+            local px = 40 + (clicked_idx - 1) * 150 + 65
+            self.particles:spawn(px, 615, config.COLOR_ROYALTIES, 15)
             self:trigger_error(msg)
         end
     end
@@ -288,7 +284,8 @@ function GameState:update(dt)
 end
 
 function GameState:draw()
-    ui.draw_background()
+    love.graphics.setColor(config.COLOR_DESK[1], config.COLOR_DESK[2], config.COLOR_DESK[3], 1.0)
+    love.graphics.rectangle("fill", 0, 0, config.SCREEN_WIDTH, config.SCREEN_HEIGHT)
     
     local offset_x, offset_y = self.shake:get_offset()
     
@@ -305,10 +302,8 @@ function GameState:draw()
 end
 
 function GameState:draw_gameplay()
-    ui.draw_sidebar(25, 70, 340, 615)
-    
     -- 1. Left Panel - Hype Meter & Inventory
-    love.graphics.setColor(config.COLOR_PANEL[1], config.COLOR_PANEL[2], config.COLOR_PANEL[3], config.images.bg_sidebar and 0.85 or 1.0)
+    love.graphics.setColor(config.COLOR_PANEL[1], config.COLOR_PANEL[2], config.COLOR_PANEL[3], 1.0)
     love.graphics.rectangle("fill", 40, 80, 310, 220, 10, 10)
     love.graphics.setColor(config.COLOR_TEXT_MUTED[1], config.COLOR_TEXT_MUTED[2], config.COLOR_TEXT_MUTED[3], 1.0)
     love.graphics.setLineWidth(2)
@@ -343,7 +338,7 @@ function GameState:draw_gameplay()
     love.graphics.print(stage_name, 60, 250)
     
     -- Resources
-    love.graphics.setColor(config.COLOR_PANEL[1], config.COLOR_PANEL[2], config.COLOR_PANEL[3], config.images.bg_sidebar and 0.85 or 1.0)
+    love.graphics.setColor(config.COLOR_PANEL[1], config.COLOR_PANEL[2], config.COLOR_PANEL[3], 1.0)
     love.graphics.rectangle("fill", 40, 315, 310, 80, 10, 10)
     love.graphics.setFont(self.ui_font)
     love.graphics.setColor(config.COLOR_TEXT_LIGHT[1], config.COLOR_TEXT_LIGHT[2], config.COLOR_TEXT_LIGHT[3], 1.0)
@@ -417,14 +412,8 @@ function GameState:draw_gameplay()
     local px, py, pw, ph = 400, 80, 440, 360
     love.graphics.setColor(20/255, 20/255, 25/255, 1.0)
     love.graphics.rectangle("fill", px - 6, py - 6, pw + 12, ph + 12, 8, 8)
-    
-    if config.images.overlay_paper then
-        love.graphics.setColor(1.0, 1.0, 1.0, 1.0)
-        love.graphics.draw(config.images.overlay_paper, px, py, 0, pw / config.images.overlay_paper:getWidth(), ph / config.images.overlay_paper:getHeight())
-    else
-        love.graphics.setColor(config.COLOR_PAPER[1], config.COLOR_PAPER[2], config.COLOR_PAPER[3], 1.0)
-        love.graphics.rectangle("fill", px, py, pw, ph, 6, 6)
-    end
+    love.graphics.setColor(config.COLOR_PAPER[1], config.COLOR_PAPER[2], config.COLOR_PAPER[3], 1.0)
+    love.graphics.rectangle("fill", px, py, pw, ph, 6, 6)
     
     -- Rows history
     local row_y = 100
@@ -448,33 +437,21 @@ function GameState:draw_gameplay()
             local clue = clues[l_idx]
             local box_x = start_x + (l_idx - 1) * (box_w + box_gap)
             
-            local tile_img = config.images.tile_empty
-            if clue == "green" then tile_img = config.images.tile_green
-            elseif clue == "yellow" then tile_img = config.images.tile_yellow
-            elseif clue == "grey" then tile_img = config.images.tile_grey
+            local col = config.COLOR_CLUE_EMPTY
+            if clue == "green" then
+                col = config.COLOR_CLUE_GREEN
+            elseif clue == "yellow" then
+                col = config.COLOR_CLUE_YELLOW
+            elseif clue == "grey" then
+                col = config.COLOR_CLUE_GREY
+            elseif clue == "redacted" then
+                col = config.COLOR_CLUE_REDACTED
             end
             
-            if tile_img then
-                love.graphics.setColor(1.0, 1.0, 1.0, 1.0)
-                love.graphics.draw(tile_img, box_x, row_y, 0, box_w / tile_img:getWidth(), box_w / tile_img:getHeight())
-            else
-                local col = config.COLOR_CLUE_EMPTY
-                if clue == "green" then col = config.COLOR_CLUE_GREEN
-                elseif clue == "yellow" then col = config.COLOR_CLUE_YELLOW
-                elseif clue == "grey" then col = config.COLOR_CLUE_GREY
-                elseif clue == "redacted" then col = config.COLOR_CLUE_REDACTED
-                end
-                love.graphics.setColor(col[1], col[2], col[3], 1.0)
-                love.graphics.rectangle("fill", box_x, row_y, box_w, box_w, 4, 4)
-            end
+            love.graphics.setColor(col[1], col[2], col[3], 1.0)
+            love.graphics.rectangle("fill", box_x, row_y, box_w, box_w, 4, 4)
             
-            if clue == "redacted" then
-                love.graphics.setColor(139/255, 69/255, 19/255, 0.7)
-                love.graphics.setLineWidth(3)
-                love.graphics.circle("line", box_x + box_w/2, row_y + box_w/2, box_w/2 - 4)
-            end
-            
-            local let_color = (clue == "empty") and config.COLOR_TEXT_DARK or config.COLOR_TEXT_LIGHT
+            local let_color = (col == config.COLOR_CLUE_EMPTY) and config.COLOR_TEXT_DARK or config.COLOR_TEXT_LIGHT
             love.graphics.setFont(self.typewriter_font)
             love.graphics.setColor(let_color[1], let_color[2], let_color[3], 1.0)
             local char_upper = char:upper()
@@ -516,20 +493,18 @@ function GameState:draw_gameplay()
     for l_idx = 1, input_len do
         local box_x = start_x + (l_idx - 1) * (box_w + box_gap)
         
+        love.graphics.setColor(230/255, 225/255, 215/255, 1.0)
+        love.graphics.rectangle("fill", box_x, input_y, box_w, box_w, 4, 4)
+        love.graphics.setColor(config.COLOR_TEXT_DARK[1], config.COLOR_TEXT_DARK[2], config.COLOR_TEXT_DARK[3], 1.0)
+        love.graphics.setLineWidth(1)
+        love.graphics.rectangle("line", box_x, input_y, box_w, box_w, 4, 4)
+        
         if l_idx <= #self.current_input then
-            -- Typed box: draw a pale yellow post-it note style block
-            love.graphics.setColor(253/255, 252/255, 215/255, 1.0)
-            love.graphics.rectangle("fill", box_x, input_y, box_w, box_w, 4, 4)
-            love.graphics.setColor(config.COLOR_TEXT_DARK[1], config.COLOR_TEXT_DARK[2], config.COLOR_TEXT_DARK[3], 1.0)
-            love.graphics.setLineWidth(1)
-            love.graphics.rectangle("line", box_x, input_y, box_w, box_w, 4, 4)
-            
             local char = self.current_input:sub(l_idx, l_idx)
             local mods = self.run_manager.keyboard_mods[char] or {}
             if mods.coffee_ring then
-                love.graphics.setColor(139/255, 69/255, 19/255, 0.7)
-                love.graphics.setLineWidth(3)
-                love.graphics.circle("line", box_x + box_w/2, input_y + box_w/2, box_w/2 - 4)
+                love.graphics.setColor(config.COLOR_CLUE_REDACTED[1], config.COLOR_CLUE_REDACTED[2], config.COLOR_CLUE_REDACTED[3], 1.0)
+                love.graphics.rectangle("fill", box_x, input_y, box_w, box_w, 4, 4)
             end
             
             love.graphics.setFont(self.typewriter_font)
@@ -538,11 +513,6 @@ function GameState:draw_gameplay()
             local lw = self.typewriter_font:getWidth(char_upper)
             local lh = self.typewriter_font:getHeight()
             love.graphics.print(char_upper, box_x + (box_w - lw) / 2, input_y + (box_w - lh) / 2)
-        else
-            -- Untyped empty box: draw a semi-transparent dashed/dotted outline, no fill (shows corkboard texture)
-            love.graphics.setColor(config.COLOR_TEXT_MUTED[1], config.COLOR_TEXT_MUTED[2], config.COLOR_TEXT_MUTED[3], 0.6)
-            love.graphics.setLineWidth(1.5)
-            love.graphics.rectangle("line", box_x, input_y, box_w, box_w, 4, 4)
         end
     end
     
