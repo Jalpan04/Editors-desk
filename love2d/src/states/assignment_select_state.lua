@@ -119,7 +119,7 @@ function AssignmentSelectState:draw()
     love.graphics.print(chap_str, config.SCREEN_WIDTH / 2 - chap_w / 2, 15)
     
     love.graphics.setColor(config.COLOR_TEXT_MUTED[1], config.COLOR_TEXT_MUTED[2], config.COLOR_TEXT_MUTED[3], 1.0)
-    local items_str = "Tropes: " .. #self.run_manager.tropes .. "/5 | Edits: " .. #self.run_manager.edits .. "/2"
+    local items_str = "Stationery: " .. #self.run_manager.tropes .. "/5 | Snacks: " .. #self.run_manager.edits .. "/2"
     local items_w = self.stat_font:getWidth(items_str)
     love.graphics.print(items_str, config.SCREEN_WIDTH - items_w - 30, 15)
     

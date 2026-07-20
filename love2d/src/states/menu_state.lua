@@ -108,7 +108,7 @@ function MenuState:draw()
         "Your desk is cluttered with manuscripts.",
         "Choose your words carefully to beat target Hype scores.",
         "Draft without scoring to find letter placements.",
-        "Purchase Style Guides, passive Tropes, and keyboard enhancements",
+        "Purchase Style Guides, Stationery items, and keyboard enhancements",
         "to survive 8 Chapters and edit the most chaotic Authors."
     }
     local y_off = 270

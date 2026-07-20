@@ -318,12 +318,12 @@ function ShopState:draw()
                 col_accent = config.COLOR_CLUE_GREEN
             elseif item.type == "trope" then
                 title_text = obj.name
-                type_lbl = "TROPE (PASSIVE)"
+                type_lbl = "STATIONERY"
                 desc_text = obj.description
                 col_accent = config.COLOR_ACCENT
             elseif item.type == "edit" then
                 title_text = obj.name:gsub("The ", "")
-                type_lbl = "EDIT (CONSUMABLE)"
+                type_lbl = "SNACK"
                 desc_text = obj.description
                 col_accent = config.COLOR_ROYALTIES
             else

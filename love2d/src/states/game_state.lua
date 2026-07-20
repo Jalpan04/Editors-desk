@@ -185,14 +185,14 @@ function GameState:mousepressed(x, y, button, istouch, presses)
 end
 
 function GameState:click_edit_slot(mx, my)
-    local s1_x, s1_y, s1_w, s1_h = 40, 580, 130, 70
-    local s2_x, s2_y, s2_w, s2_h = 190, 580, 130, 70
-    
     local clicked_idx = -1
-    if mx >= s1_x and mx <= s1_x + s1_w and my >= s1_y and my <= s1_y + s1_h then
-        clicked_idx = 1
-    elseif mx >= s2_x and mx <= s2_x + s2_w and my >= s2_y and my <= s2_y + s2_h then
-        clicked_idx = 2
+    for idx = 1, 2 do
+        local ex = 895
+        local ey = 295 + (idx - 1) * 70
+        if mx >= ex and mx <= ex + 130 and my >= ey and my <= ey + 60 then
+            clicked_idx = idx
+            break
+        end
     end
     
     if clicked_idx > 0 and clicked_idx <= #self.run_manager.edits then
@@ -208,7 +208,7 @@ function GameState:click_edit_slot(mx, my)
             if #target_tropes > 0 then
                 local msg = edit_item:use(self.run_manager, {target_trope = target_tropes[1]})
                 table.remove(self.run_manager.edits, clicked_idx)
-                self.particles:spawn(100, 615, config.COLOR_HIGHLIGHTER, 15)
+                self.particles:spawn(960, 295 + (clicked_idx - 1) * 70 + 30, config.COLOR_HIGHLIGHTER, 15)
                 self:trigger_error(msg)
             else
                 self:trigger_error("No Tropes have active debuffs!")
@@ -216,8 +216,7 @@ function GameState:click_edit_slot(mx, my)
         else
             local msg = edit_item:use(self.run_manager)
             table.remove(self.run_manager.edits, clicked_idx)
-            local px = 40 + (clicked_idx - 1) * 150 + 65
-            self.particles:spawn(px, 615, config.COLOR_ROYALTIES, 15)
+            self.particles:spawn(960, 295 + (clicked_idx - 1) * 70 + 30, config.COLOR_ROYALTIES, 15)
             self:trigger_error(msg)
         end
     end
@@ -242,9 +241,9 @@ function GameState:check_tooltips(mx, my)
     end
     
     for idx, edit in ipairs(self.run_manager.edits) do
-        local ex = 40 + (idx - 1) * 150
-        local ey = 590
-        if mx >= ex and mx <= ex + 130 and my >= ey and my <= ey + 70 then
+        local ex = 895
+        local ey = 295 + (idx - 1) * 70
+        if mx >= ex and mx <= ex + 130 and my >= ey and my <= ey + 60 then
             self.hovered_tooltip = {
                 title = edit.name,
                 desc = edit.description,
@@ -346,10 +345,10 @@ function GameState:draw_gameplay()
     love.graphics.setColor(config.COLOR_CLUE_YELLOW[1], config.COLOR_CLUE_YELLOW[2], config.COLOR_CLUE_YELLOW[3], 1.0)
     love.graphics.print("Drafts: " .. self.run_manager.drafts_left .. "/" .. self.run_manager.drafts_max, 60, 360)
     
-    -- Tropes
+    -- Stationery
     love.graphics.setFont(self.ui_bold)
     love.graphics.setColor(config.COLOR_TEXT_LIGHT[1], config.COLOR_TEXT_LIGHT[2], config.COLOR_TEXT_LIGHT[3], 1.0)
-    love.graphics.print("TROPES (PASSIVES)", 40, 408)
+    love.graphics.print("STATIONERY", 40, 408)
     
     for idx = 1, 5 do
         local tx = 40 + (idx - 1) * 68
@@ -376,35 +375,6 @@ function GameState:draw_gameplay()
             local iw = self.typewriter_font:getWidth(initials)
             local ih = self.typewriter_font:getHeight()
             love.graphics.print(initials, tx + (60 - iw) / 2, ty + (60 - ih) / 2)
-        end
-    end
-    
-    -- Edits
-    love.graphics.setFont(self.ui_bold)
-    love.graphics.setColor(config.COLOR_TEXT_LIGHT[1], config.COLOR_TEXT_LIGHT[2], config.COLOR_TEXT_LIGHT[3], 1.0)
-    love.graphics.print("EDITS (CONSUMABLES)", 40, 560)
-    
-    for idx = 1, 2 do
-        local ex = 40 + (idx - 1) * 150
-        local ey = 590
-        love.graphics.setColor(20/255, 22/255, 30/255, 1.0)
-        love.graphics.rectangle("fill", ex, ey, 130, 70, 6, 6)
-        love.graphics.setColor(config.COLOR_TEXT_MUTED[1], config.COLOR_TEXT_MUTED[2], config.COLOR_TEXT_MUTED[3], 1.0)
-        love.graphics.setLineWidth(1)
-        love.graphics.rectangle("line", ex, ey, 130, 70, 6, 6)
-        
-        if idx <= #self.run_manager.edits then
-            local edit = self.run_manager.edits[idx]
-            local name_clean = edit.name:gsub("The ", "")
-            love.graphics.setFont(self.ui_font)
-            love.graphics.setColor(config.COLOR_TEXT_LIGHT[1], config.COLOR_TEXT_LIGHT[2], config.COLOR_TEXT_LIGHT[3], 1.0)
-            local nw = self.ui_font:getWidth(name_clean)
-            love.graphics.print(name_clean, ex + (130 - nw) / 2, ey + 15)
-            
-            love.graphics.setFont(self.tooltip_font)
-            love.graphics.setColor(config.COLOR_TEXT_MUTED[1], config.COLOR_TEXT_MUTED[2], config.COLOR_TEXT_MUTED[3], 1.0)
-            local uw = self.tooltip_font:getWidth("Click to use")
-            love.graphics.print("Click to use", ex + (130 - uw) / 2, ey + 40)
         end
     end
     
@@ -618,6 +588,36 @@ function GameState:draw_gameplay()
     -- Buttons
     for _, btn in ipairs(self.buttons) do
         btn:draw()
+    end
+    
+    -- Snacks (Right side below Buttons)
+    love.graphics.setFont(self.ui_bold)
+    love.graphics.setColor(config.COLOR_TEXT_LIGHT[1], config.COLOR_TEXT_LIGHT[2], config.COLOR_TEXT_LIGHT[3], 1.0)
+    local snk_w = self.ui_bold:getWidth("SNACKS")
+    love.graphics.print("SNACKS", 880 + (160 - snk_w) / 2, 265)
+    
+    for idx = 1, 2 do
+        local ex = 895
+        local ey = 295 + (idx - 1) * 70
+        love.graphics.setColor(20/255, 22/255, 30/255, 1.0)
+        love.graphics.rectangle("fill", ex, ey, 130, 60, 6, 6)
+        love.graphics.setColor(config.COLOR_TEXT_MUTED[1], config.COLOR_TEXT_MUTED[2], config.COLOR_TEXT_MUTED[3], 1.0)
+        love.graphics.setLineWidth(1)
+        love.graphics.rectangle("line", ex, ey, 130, 60, 6, 6)
+        
+        if idx <= #self.run_manager.edits then
+            local edit = self.run_manager.edits[idx]
+            local name_clean = edit.name:gsub("The ", "")
+            love.graphics.setFont(self.ui_font)
+            love.graphics.setColor(config.COLOR_TEXT_LIGHT[1], config.COLOR_TEXT_LIGHT[2], config.COLOR_TEXT_LIGHT[3], 1.0)
+            local nw = self.ui_font:getWidth(name_clean)
+            love.graphics.print(name_clean, ex + (130 - nw) / 2, ey + 10)
+            
+            love.graphics.setFont(self.tooltip_font)
+            love.graphics.setColor(config.COLOR_TEXT_MUTED[1], config.COLOR_TEXT_MUTED[2], config.COLOR_TEXT_MUTED[3], 1.0)
+            local uw = self.tooltip_font:getWidth("Click to use")
+            love.graphics.print("Click to use", ex + (130 - uw) / 2, ey + 35)
+        end
     end
 end
 

@@ -116,7 +116,7 @@ function GameOverState:draw()
     local stats = {
         "Chapters Completed: " .. (self.run_manager.chapter - 1) .. " / 8",
         "Final Royalties Earned: $" .. self.run_manager.royalties,
-        "Active Tropes Equipped: " .. #self.run_manager.tropes,
+        "Stationery Equipped: " .. #self.run_manager.tropes,
     }
     
     local y_off = 265
@@ -130,7 +130,7 @@ function GameOverState:draw()
     
     love.graphics.setFont(self.lbl_font)
     love.graphics.setColor(config.COLOR_TEXT_DARK[1], config.COLOR_TEXT_DARK[2], config.COLOR_TEXT_DARK[3], 1.0)
-    love.graphics.print("Your Desk Tropes:", config.SCREEN_WIDTH / 2 - 240, 360)
+    love.graphics.print("Your Desk Stationery:", config.SCREEN_WIDTH / 2 - 240, 360)
     
     love.graphics.setFont(self.desc_font)
     if #self.run_manager.tropes == 0 then
