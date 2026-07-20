@@ -83,7 +83,6 @@ function config.load_images()
         fx_stamp_impact = "assets/fx_stamp_impact.png",
         overlay_paper = "assets/overlay_paper.png",
         stain_ink = "assets/stain_ink_1.png",
-        tile_empty = "assets/tile_empty.png",
         tile_green = "assets/tile_green.png",
         tile_grey = "assets/tile_grey.png",
         tile_yellow = "assets/tile_yellow.png"

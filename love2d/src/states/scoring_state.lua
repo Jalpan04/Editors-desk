@@ -529,30 +529,41 @@ function ScoringState:draw_desk_elements()
         local box_x = start_x + (l_idx - 1) * (box_w + box_gap)
         
         local clue = clues[l_idx]
-        local tile_img = config.images.tile_empty
-        if clue == "green" then tile_img = config.images.tile_green
-        elseif clue == "yellow" then tile_img = config.images.tile_yellow
-        elseif clue == "grey" then tile_img = config.images.tile_grey
-        end
+        local is_revealed = (self.anim_stage == "done") or (self.anim_stage == "letters" and l_idx < self.letter_idx)
         
-        if tile_img then
-            love.graphics.setColor(1.0, 1.0, 1.0, 1.0)
-            love.graphics.draw(tile_img, box_x, row_y, 0, box_w / tile_img:getWidth(), box_w / tile_img:getHeight())
-        else
-            local col = config.COLOR_CLUE_EMPTY
-            if clue == "green" then col = config.COLOR_CLUE_GREEN
-            elseif clue == "yellow" then col = config.COLOR_CLUE_YELLOW
-            elseif clue == "grey" then col = config.COLOR_CLUE_GREY
-            elseif clue == "redacted" then col = config.COLOR_CLUE_REDACTED
+        if is_revealed then
+            local tile_img = nil
+            if clue == "green" then tile_img = config.images.tile_green
+            elseif clue == "yellow" then tile_img = config.images.tile_yellow
+            elseif clue == "grey" then tile_img = config.images.tile_grey
             end
-            love.graphics.setColor(col[1], col[2], col[3], 1.0)
+            
+            if tile_img then
+                love.graphics.setColor(1.0, 1.0, 1.0, 1.0)
+                love.graphics.draw(tile_img, box_x, row_y, 0, box_w / tile_img:getWidth(), box_w / tile_img:getHeight())
+            else
+                local col = config.COLOR_CLUE_EMPTY
+                if clue == "green" then col = config.COLOR_CLUE_GREEN
+                elseif clue == "yellow" then col = config.COLOR_CLUE_YELLOW
+                elseif clue == "grey" then col = config.COLOR_CLUE_GREY
+                elseif clue == "redacted" then col = config.COLOR_CLUE_REDACTED
+                end
+                love.graphics.setColor(col[1], col[2], col[3], 1.0)
+                love.graphics.rectangle("fill", box_x, row_y, box_w, box_w, 4, 4)
+            end
+            
+            if clue == "redacted" then
+                love.graphics.setColor(139/255, 69/255, 19/255, 0.7)
+                love.graphics.setLineWidth(3)
+                love.graphics.circle("line", box_x + box_w/2, row_y + box_w/2, box_w/2 - 4)
+            end
+        else
+            -- Not revealed yet: draw a pale yellow post-it note
+            love.graphics.setColor(253/255, 252/255, 215/255, 1.0)
             love.graphics.rectangle("fill", box_x, row_y, box_w, box_w, 4, 4)
-        end
-        
-        if clue == "redacted" then
-            love.graphics.setColor(139/255, 69/255, 19/255, 0.7)
-            love.graphics.setLineWidth(3)
-            love.graphics.circle("line", box_x + box_w/2, row_y + box_w/2, box_w/2 - 4)
+            love.graphics.setColor(config.COLOR_TEXT_DARK[1], config.COLOR_TEXT_DARK[2], config.COLOR_TEXT_DARK[3], 1.0)
+            love.graphics.setLineWidth(1)
+            love.graphics.rectangle("line", box_x, row_y, box_w, box_w, 4, 4)
         end
         
         if l_idx == self.letter_idx and self.anim_stage == "letters" then
@@ -561,7 +572,7 @@ function ScoringState:draw_desk_elements()
             love.graphics.rectangle("line", box_x, row_y, box_w, box_w, 4, 4)
         end
         
-        local let_color = (clue == "empty") and config.COLOR_TEXT_DARK or config.COLOR_TEXT_LIGHT
+        local let_color = (not is_revealed or clue == "empty") and config.COLOR_TEXT_DARK or config.COLOR_TEXT_LIGHT
         love.graphics.setFont(self.typewriter_font)
         love.graphics.setColor(let_color[1], let_color[2], let_color[3], 1.0)
         local char_upper = char:upper()

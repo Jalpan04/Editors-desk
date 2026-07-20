@@ -516,18 +516,14 @@ function GameState:draw_gameplay()
     for l_idx = 1, input_len do
         local box_x = start_x + (l_idx - 1) * (box_w + box_gap)
         
-        if config.images.tile_empty then
-            love.graphics.setColor(1.0, 1.0, 1.0, 1.0)
-            love.graphics.draw(config.images.tile_empty, box_x, input_y, 0, box_w / config.images.tile_empty:getWidth(), box_w / config.images.tile_empty:getHeight())
-        else
-            love.graphics.setColor(230/255, 225/255, 215/255, 1.0)
+        if l_idx <= #self.current_input then
+            -- Typed box: draw a pale yellow post-it note style block
+            love.graphics.setColor(253/255, 252/255, 215/255, 1.0)
             love.graphics.rectangle("fill", box_x, input_y, box_w, box_w, 4, 4)
             love.graphics.setColor(config.COLOR_TEXT_DARK[1], config.COLOR_TEXT_DARK[2], config.COLOR_TEXT_DARK[3], 1.0)
             love.graphics.setLineWidth(1)
             love.graphics.rectangle("line", box_x, input_y, box_w, box_w, 4, 4)
-        end
-        
-        if l_idx <= #self.current_input then
+            
             local char = self.current_input:sub(l_idx, l_idx)
             local mods = self.run_manager.keyboard_mods[char] or {}
             if mods.coffee_ring then
@@ -542,6 +538,11 @@ function GameState:draw_gameplay()
             local lw = self.typewriter_font:getWidth(char_upper)
             local lh = self.typewriter_font:getHeight()
             love.graphics.print(char_upper, box_x + (box_w - lw) / 2, input_y + (box_w - lh) / 2)
+        else
+            -- Untyped empty box: draw a semi-transparent dashed/dotted outline, no fill (shows corkboard texture)
+            love.graphics.setColor(config.COLOR_TEXT_MUTED[1], config.COLOR_TEXT_MUTED[2], config.COLOR_TEXT_MUTED[3], 0.6)
+            love.graphics.setLineWidth(1.5)
+            love.graphics.rectangle("line", box_x, input_y, box_w, box_w, 4, 4)
         end
     end
     
