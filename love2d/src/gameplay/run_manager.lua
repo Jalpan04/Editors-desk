@@ -56,8 +56,8 @@ function RunManager.new(data_dir)
     
     -- Current Round State
     self.round_score = 0
-    self.submissions_max = 4
-    self.submissions_left = 4
+    self.submissions_max = 5
+    self.submissions_left = 5
     self.drafts_max = 2
     self.drafts_left = 2
     self.target_word = ""
@@ -131,7 +131,7 @@ function RunManager:start_round()
     end
     self.key_discoveries[";"] = "empty"
     
-    self.submissions_max = 4
+    self.submissions_max = 5
     local has_red_pen = false
     for _, t in ipairs(self.tropes) do
         if t.name == "The Red Pen" and t.is_debuff_active then
@@ -140,7 +140,7 @@ function RunManager:start_round()
         end
     end
     if has_red_pen then
-        self.submissions_max = 3
+        self.submissions_max = 4
     end
     
     self.submissions_left = self.submissions_max

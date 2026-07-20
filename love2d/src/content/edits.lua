@@ -116,8 +116,8 @@ function WhiteOutEdit:use(run_manager, kwargs)
     if target_trope.name == "The Ghostwriter" then
         run_manager:update_target_score()
     elseif target_trope.name == "The Red Pen" then
-        run_manager.submissions_max = 4
-        run_manager.submissions_left = math.min(run_manager.submissions_left + 1, 4)
+        run_manager.submissions_max = 5
+        run_manager.submissions_left = math.min(run_manager.submissions_left + 1, 5)
     end
     
     return "Debuff removed from '" .. target_trope.name .. "'!"
